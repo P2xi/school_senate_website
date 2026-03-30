@@ -57,14 +57,25 @@ const badgeClass = computed(() => {
   position: absolute;
   width: 180px;
   height: 180px;
-  right: -60px;
+  left: -60px;
   top: -70px;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(120, 156, 235, 0.24), rgba(120, 156, 235, 0));
+  background: radial-gradient(circle, rgba(140, 175, 248, 0.24), rgba(140, 175, 248, 0));
   filter: blur(24px);
   opacity: 0.55;
   transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card::after {
+  content: '';
+  position: absolute;
+  inset: -42% auto -42% -120%;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(224, 236, 255, 0.14), transparent);
+  transform: skewX(-16deg);
+  opacity: 0;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease;
 }
 
 .project-card:hover {
@@ -84,7 +95,12 @@ const badgeClass = computed(() => {
 
 .project-card:hover::before {
   opacity: 0.9;
-  transform: translate3d(-10px, 8px, 0) scale(1.08);
+  transform: translate3d(10px, 8px, 0) scale(1.08);
+}
+
+.project-card:hover::after {
+  opacity: 1;
+  transform: translateX(300%) skewX(-16deg);
 }
 
 .project-head {

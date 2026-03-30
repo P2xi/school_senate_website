@@ -1,4 +1,60 @@
-﻿<script setup lang="ts">
+<template>
+  <div ref="pageRef" class="projects-page">
+    <div class="ambient-layer" aria-hidden="true">
+      <span class="ambient-blob blob-a" />
+      <span class="ambient-blob blob-b" />
+      <span class="ambient-blob blob-c" />
+    </div>
+
+    <section class="page-hero page-section" data-scene>
+      <p class="hero-tag reveal-item" data-reveal>Eski&#351;ehir MBA Senatosu</p>
+      <h1 class="hero-title reveal-item" data-reveal style="--reveal-delay: 70ms">Projeler</h1>
+      <p class="hero-subtitle reveal-item" data-reveal style="--reveal-delay: 140ms">
+        Okul ya&#351;am&#305;na de&#287;er katan, planlanan ve aktif olarak y&#252;r&#252;t&#252;len senato projeleri.
+      </p>
+
+      <div class="hero-stats">
+        <article
+          v-for="(item, index) in headerStats"
+          :key="item.label"
+          class="stat-item reveal-item"
+          data-reveal
+          :style="{ '--reveal-delay': `${index * 90 + 170}ms` }"
+        >
+          <strong>{{ item.value }}</strong>
+          <span>{{ item.label }}</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="projects-grid" aria-label="Proje kartlar&#305;" data-scene>
+      <article
+        v-for="(project, index) in projectsContent"
+        :key="project.title"
+        class="project-card reveal-item"
+        data-reveal
+        :style="{ '--reveal-delay': `${index * 85 + 90}ms` }"
+        :class="{ featured: project.title === 'Sportfest Organizasyon Program\u0131' }"
+      >
+        <header class="card-head">
+          <span class="category-label">{{ project.category }}</span>
+          <span class="status-badge" :class="getStatusClass(project.status)">{{ project.status }}</span>
+        </header>
+        <h2>{{ project.title }}</h2>
+        <p>{{ project.projectsDescription }}</p>
+        <RouterLink class="detail-button" :to="project.detailTo">Detaylar&#305; G&#246;r</RouterLink>
+      </article>
+    </section>
+
+    <section class="cta-section page-section reveal-item" data-reveal data-scene>
+      <h2>Yeni projelere katk&#305; sa&#287;lamak ister misin?</h2>
+      <p>Senato &#231;al&#305;&#351;malar&#305;na dahil olmak veya &#246;neri sunmak i&#231;in bizimle ileti&#351;ime ge&#231;.</p>
+      <RouterLink class="cta-button" to="/iletisim">&#304;leti&#351;ime Ge&#231;</RouterLink>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import {
@@ -14,13 +70,13 @@ let revealObserver: IntersectionObserver | null = null
 
 const headerStats = computed(() => [
   { value: projectsPortfolioMetric.display, label: 'Toplam Proje' },
-  { value: String(getProjectStatusCount('Yakında')), label: 'Yakında' },
-  { value: String(getProjectStatusCount('Planlanıyor')), label: 'Planlanan' },
+  { value: String(getProjectStatusCount('Yak\u0131nda')), label: 'Yak\u0131nda' },
+  { value: String(getProjectStatusCount('Planlan\u0131yor')), label: 'Planlanan' },
 ])
 
 const getStatusClass = (status: ProjectStatus): string => {
-  if (status === 'Yakında') return 'soon'
-  if (status === 'Planlanıyor') return 'planned'
+  if (status === 'Yak\u0131nda') return 'soon'
+  if (status === 'Planlan\u0131yor') return 'planned'
   if (status === 'Devam Ediyor') return 'ongoing'
   return 'completed'
 }
@@ -62,62 +118,6 @@ onBeforeUnmount(() => {
   revealObserver?.disconnect()
 })
 </script>
-
-<template>
-  <div ref="pageRef" class="projects-page">
-    <div class="ambient-layer" aria-hidden="true">
-      <span class="ambient-blob blob-a" />
-      <span class="ambient-blob blob-b" />
-      <span class="ambient-blob blob-c" />
-    </div>
-
-    <section class="page-hero page-section" data-scene>
-      <p class="hero-tag reveal-item" data-reveal>Eskişehir MBA Senatosu</p>
-      <h1 class="hero-title reveal-item" data-reveal style="--reveal-delay: 70ms">Projeler</h1>
-      <p class="hero-subtitle reveal-item" data-reveal style="--reveal-delay: 140ms">
-        Okul yaşamına değer katan, planlanan ve aktif olarak yürütülen senato projeleri.
-      </p>
-
-      <div class="hero-stats">
-        <article
-          v-for="(item, index) in headerStats"
-          :key="item.label"
-          class="stat-item reveal-item"
-          data-reveal
-          :style="{ '--reveal-delay': `${index * 90 + 170}ms` }"
-        >
-          <strong>{{ item.value }}</strong>
-          <span>{{ item.label }}</span>
-        </article>
-      </div>
-    </section>
-
-    <section class="projects-grid" aria-label="Proje kartları" data-scene>
-      <article
-        v-for="(project, index) in projectsContent"
-        :key="project.title"
-        class="project-card reveal-item"
-        data-reveal
-        :style="{ '--reveal-delay': `${index * 85 + 90}ms` }"
-        :class="{ featured: project.title === 'Sportfest Organizasyon Programı' }"
-      >
-        <header class="card-head">
-          <span class="category-label">{{ project.category }}</span>
-          <span class="status-badge" :class="getStatusClass(project.status)">{{ project.status }}</span>
-        </header>
-        <h2>{{ project.title }}</h2>
-        <p>{{ project.projectsDescription }}</p>
-        <RouterLink class="detail-button" :to="project.detailTo">Detayları Gör</RouterLink>
-      </article>
-    </section>
-
-    <section class="cta-section page-section reveal-item" data-reveal data-scene>
-      <h2>Yeni projelere katkı sağlamak ister misin?</h2>
-      <p>Senato çalışmalarına dahil olmak veya öneri sunmak için bizimle iletişime geç.</p>
-      <RouterLink class="cta-button" to="/iletisim">İletişime Geç</RouterLink>
-    </section>
-  </div>
-</template>
 
 <style scoped>
 .projects-page {
@@ -216,16 +216,12 @@ onBeforeUnmount(() => {
 }
 
 .hero-tag {
-  display: inline-flex;
-  width: fit-content;
   margin: 0;
-  padding: 0.42rem 0.88rem;
-  border-radius: 999px;
-  border: 1px solid rgba(163, 188, 238, 0.32);
-  background: rgba(100, 140, 237, 0.12);
-  color: #d6e5ff;
-  font-size: 0.82rem;
-  font-weight: 600;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 650;
 }
 
 .hero-title {
@@ -639,6 +635,7 @@ onBeforeUnmount(() => {
   }
 }
 </style>
+
 
 
 

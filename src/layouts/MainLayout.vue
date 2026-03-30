@@ -61,8 +61,36 @@
           <ul class="footer-contact">
             <li>Eskişehir</li>
             <li>iletisim@eskisehirmbasenatosu.org</li>
-            <li>+90 (222) 000 00 00</li>
           </ul>
+          <div class="footer-social">
+            <a class="social-pill" href="https://www.tiktok.com/@esmbasenato" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M19.59 6.69A4.83 4.83 0 0 1 16 5.14V14.3a5.72 5.72 0 1 1-4.95-5.67v2.88a2.84 2.84 0 1 0 2.07 2.73V2h2.88a4.8 4.8 0 0 0 3.59 4.69Z"
+                />
+              </svg>
+              <span>TikTok</span>
+            </a>
+            <a class="social-pill" href="https://www.instagram.com/esmbaokullarisenato/" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.9A3.85 3.85 0 0 0 3.9 7.75v8.5a3.85 3.85 0 0 0 3.85 3.85h8.5a3.85 3.85 0 0 0 3.85-3.85v-8.5a3.85 3.85 0 0 0-3.85-3.85zm8.95 1.43a1.14 1.14 0 1 1 0 2.28a1.14 1.14 0 0 1 0-2.28M12 7a5 5 0 1 1 0 10a5 5 0 0 1 0-10m0 1.9a3.1 3.1 0 1 0 0 6.2a3.1 3.1 0 0 0 0-6.2"
+                />
+              </svg>
+              <span>Instagram</span>
+            </a>
+            <a class="social-pill" href="https://x.com/Esmbasenato" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="m18.9 2.25h3.45l-7.54 8.62L23.7 21.75h-6.96l-5.46-6.82-5.97 6.82H1.86l8.06-9.2L1.5 2.25h7.14l4.93 6.31zM17.7 19.7h1.91L7.6 4.2H5.56z"
+                />
+              </svg>
+              <span>X</span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="footer-bottom">© 2026 Eskişehir MBA Senatosu. Tüm hakları saklıdır.</div>
@@ -118,22 +146,37 @@ watch(
   --bg-primary: #070f1f;
   --bg-secondary: #0d192f;
   --surface: #111f39;
+  --surface-elev: #162744;
   --text-primary: #edf2ff;
   --text-secondary: #b6c3db;
   --accent: #86a2d8;
   --accent-strong: #b5c8ea;
   --border-soft: rgba(175, 193, 222, 0.2);
   --shadow-soft: 0 18px 40px rgba(3, 9, 21, 0.3);
+  --sys-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --sys-card-radius: 18px;
+  --sys-card-border: rgba(174, 196, 236, 0.3);
+  --sys-card-border-strong: rgba(202, 220, 252, 0.58);
+  --sys-card-bg:
+    radial-gradient(circle at 14% 10%, rgba(142, 178, 252, 0.18), rgba(142, 178, 252, 0) 54%),
+    linear-gradient(170deg, rgba(25, 43, 74, 0.86), rgba(13, 26, 50, 0.92));
+  --sys-card-bg-hover:
+    radial-gradient(circle at 14% 10%, rgba(164, 197, 255, 0.26), rgba(164, 197, 255, 0) 56%),
+    linear-gradient(170deg, rgba(30, 51, 88, 0.9), rgba(15, 29, 56, 0.94));
+  --sys-card-glow: 0 20px 36px rgba(3, 9, 21, 0.3), 0 0 24px rgba(84, 125, 224, 0.18);
+  --sys-card-glow-hover: 0 24px 42px rgba(3, 9, 21, 0.36), 0 0 32px rgba(102, 145, 238, 0.26);
 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(circle at 12% 6%, rgba(88, 126, 206, 0.18), transparent 40%),
-    radial-gradient(circle at 84% 78%, rgba(58, 79, 142, 0.14), transparent 44%),
+    radial-gradient(circle at 7% -8%, rgba(112, 152, 238, 0.22), transparent 46%),
+    radial-gradient(circle at 24% 18%, rgba(78, 118, 205, 0.11), transparent 52%),
+    radial-gradient(circle at 82% 78%, rgba(58, 79, 142, 0.06), transparent 48%),
     linear-gradient(160deg, #081329 0%, #0a162b 38%, #0d1a31 68%, #0b172d 100%);
   color: var(--text-primary);
   position: relative;
+  animation: globalAmbientShift 24s var(--sys-ease) infinite alternate;
 }
 
 .shell-grain {
@@ -153,15 +196,16 @@ watch(
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
-  filter: blur(56px);
+  filter: blur(60px);
 }
 
 .app-shell::before {
-  width: min(500px, 38vw);
-  height: min(500px, 38vw);
-  left: -10%;
-  top: 2%;
-  background: radial-gradient(circle, rgba(72, 110, 205, 0.26), rgba(72, 110, 205, 0));
+  width: min(460px, 34vw);
+  height: min(460px, 34vw);
+  left: -14%;
+  top: -6%;
+  background: radial-gradient(circle, rgba(96, 137, 229, 0.22), rgba(96, 137, 229, 0));
+  animation: globalLightDrift 22s var(--sys-ease) infinite alternate;
 }
 
 .app-shell::after {
@@ -169,7 +213,8 @@ watch(
   height: min(430px, 32vw);
   right: -9%;
   bottom: 4%;
-  background: radial-gradient(circle, rgba(52, 71, 132, 0.2), rgba(52, 71, 132, 0));
+  background: radial-gradient(circle, rgba(52, 71, 132, 0.1), rgba(52, 71, 132, 0));
+  animation: globalLightDrift 28s var(--sys-ease) infinite alternate-reverse;
 }
 
 .navbar-wrap {
@@ -315,6 +360,7 @@ watch(
 .menu-link:active {
   transform: scale(0.985);
   box-shadow: 0 0 16px rgba(103, 140, 220, 0.24);
+  animation: navTapGlow 220ms var(--sys-ease);
 }
 
 .main-content {
@@ -323,6 +369,34 @@ watch(
   flex: 1;
   position: relative;
   z-index: 1;
+}
+
+.main-content::before,
+.main-content::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(54px);
+}
+
+.main-content::before {
+  width: min(440px, 32vw);
+  height: min(440px, 32vw);
+  left: -10%;
+  top: -6%;
+  background: radial-gradient(circle, rgba(98, 140, 232, 0.16), rgba(98, 140, 232, 0));
+  animation: globalLightDrift 18s var(--sys-ease) infinite alternate;
+}
+
+.main-content::after {
+  width: min(360px, 28vw);
+  height: min(360px, 28vw);
+  right: -8%;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(60, 88, 164, 0.08), rgba(60, 88, 164, 0));
+  animation: globalLightDrift 24s var(--sys-ease) infinite alternate-reverse;
 }
 
 .footer {
@@ -379,6 +453,52 @@ watch(
   color: var(--text-primary);
 }
 
+.footer-social {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  border: 1px solid rgba(165, 188, 229, 0.32);
+  border-radius: 999px;
+  padding: 0.44rem 0.72rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  background:
+    radial-gradient(circle at 84% -30%, rgba(150, 181, 245, 0.2), rgba(150, 181, 245, 0)),
+    rgba(134, 162, 216, 0.08);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition:
+    transform 210ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 210ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 210ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 210ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.social-pill svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.social-pill:hover,
+.social-pill:focus-visible {
+  transform: translateY(-1px) scale(1.02);
+  background:
+    radial-gradient(circle at 84% -30%, rgba(157, 188, 245, 0.24), rgba(157, 188, 245, 0)),
+    rgba(134, 162, 216, 0.14);
+  border-color: rgba(181, 200, 234, 0.5);
+  box-shadow:
+    0 10px 18px rgba(3, 9, 21, 0.22),
+    0 0 14px rgba(100, 142, 231, 0.24);
+  outline: none;
+}
+
 .footer-bottom {
   border-top: 1px solid var(--border-soft);
   color: var(--text-secondary);
@@ -386,12 +506,225 @@ watch(
   padding: 1rem 1.8rem;
 }
 
+:deep(.page-stack),
+:deep(.projects-page),
+:deep(.about-page),
+:deep(.landing-page),
+:deep(.team-page),
+:deep(.duyurular-page) {
+  position: relative;
+  isolation: isolate;
+}
+
+:deep(.ambient-layer) {
+  position: absolute;
+  inset: -10% -8% -10% -10%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:deep(.ambient-blob) {
+  border-radius: 50%;
+  filter: blur(70px) !important;
+  opacity: 0.16 !important;
+  animation: systemAmbientFloat 22s var(--sys-ease) infinite alternate !important;
+}
+
+:deep(.blob-a) {
+  left: -15% !important;
+  top: -10% !important;
+}
+
+:deep(.blob-b) {
+  right: -10% !important;
+  top: 34% !important;
+}
+
+:deep(.blob-c) {
+  left: 30% !important;
+  bottom: 6% !important;
+}
+
+:deep(.page-hero)::before {
+  left: -12% !important;
+  right: auto !important;
+  top: -26% !important;
+  background: radial-gradient(circle, rgba(126, 161, 244, 0.24), rgba(126, 161, 244, 0)) !important;
+}
+
+:deep(.page-hero)::after {
+  left: -14% !important;
+  right: auto !important;
+  top: -22% !important;
+  background: radial-gradient(circle, rgba(116, 153, 248, 0.16), rgba(116, 153, 248, 0)) !important;
+}
+
+:deep(.landing-page)::after {
+  left: -12% !important;
+  right: auto !important;
+  top: 2% !important;
+  width: min(560px, 46vw) !important;
+  height: min(320px, 24vw) !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at 36% 34%, rgba(110, 148, 235, 0.12), rgba(110, 148, 235, 0)) !important;
+  filter: blur(52px) !important;
+}
+
+:deep(.page-stack > section + section),
+:deep(.projects-page > section + section),
+:deep(.about-page > section + section),
+:deep(.landing-page > section + section),
+:deep(.team-page > section + section) {
+  position: relative;
+}
+
+:deep(.page-stack > section + section)::before,
+:deep(.projects-page > section + section)::before,
+:deep(.about-page > section + section)::before,
+:deep(.landing-page > section + section)::before,
+:deep(.team-page > section + section)::before {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: -0.8rem;
+  height: 26px;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(96, 136, 226, 0.16), rgba(96, 136, 226, 0));
+  filter: blur(12px);
+  pointer-events: none;
+  z-index: 0;
+}
+
 :deep(.page-section) {
-  background: linear-gradient(180deg, rgba(20, 35, 61, 0.9), rgba(16, 29, 52, 0.9));
-  border: 1px solid var(--border-soft);
-  border-radius: 18px;
-  box-shadow: var(--shadow-soft);
+  background:
+    radial-gradient(circle at 14% 10%, rgba(140, 175, 248, 0.16), rgba(140, 175, 248, 0) 52%),
+    linear-gradient(170deg, rgba(20, 35, 61, 0.9), rgba(16, 29, 52, 0.92));
+  border: 1px solid var(--sys-card-border);
+  border-radius: var(--sys-card-radius);
+  box-shadow: var(--sys-card-glow);
   padding: clamp(1.3rem, 2vw, 1.9rem);
+  transition:
+    border-color 260ms var(--sys-ease),
+    box-shadow 260ms var(--sys-ease),
+    transform 260ms var(--sys-ease),
+    background-position 260ms var(--sys-ease);
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.page-section)::after {
+  content: '';
+  position: absolute;
+  inset: -42% auto -42% -120%;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(224, 236, 255, 0.12), transparent);
+  transform: skewX(-16deg);
+  opacity: 0;
+  transition: transform 360ms var(--sys-ease), opacity 300ms ease;
+  pointer-events: none;
+}
+
+:deep(.page-section:hover)::after {
+  opacity: 1;
+  transform: translateX(300%) skewX(-16deg);
+}
+
+:deep(.info-card),
+:deep(.project-card),
+:deep(.stat-card),
+:deep(.stat-item),
+:deep(.value-card),
+:deep(.gallery-card),
+:deep(.gallery-item),
+:deep(.action-card),
+:deep(.team-card),
+:deep(.feature-card) {
+  border-radius: var(--sys-card-radius);
+  border: 1px solid var(--sys-card-border);
+  background: var(--sys-card-bg);
+  box-shadow: var(--sys-card-glow), inset 0 1px 0 rgba(218, 232, 255, 0.06);
+  transition:
+    transform 260ms var(--sys-ease),
+    border-color 260ms var(--sys-ease),
+    box-shadow 260ms var(--sys-ease),
+    filter 260ms var(--sys-ease),
+    background 260ms var(--sys-ease);
+}
+
+:deep(.info-card:hover),
+:deep(.project-card:hover),
+:deep(.stat-card:hover),
+:deep(.stat-item:hover),
+:deep(.value-card:hover),
+:deep(.gallery-card:hover),
+:deep(.gallery-item:hover),
+:deep(.action-card:hover),
+:deep(.team-card:hover),
+:deep(.feature-card:hover) {
+  transform: translateY(-6px) scale(1.012);
+  border-color: var(--sys-card-border-strong);
+  background: var(--sys-card-bg-hover);
+  box-shadow: var(--sys-card-glow-hover);
+}
+
+:deep(.projects-grid:has(.project-card:hover) .project-card:not(:hover)),
+:deep(.page-grid:has(.info-card:hover) .info-card:not(:hover)),
+:deep(.team-grid:has(.team-card:hover) .team-card:not(:hover)) {
+  opacity: 0.72;
+  filter: saturate(0.8) brightness(0.9);
+}
+
+:deep(.btn),
+:deep(.cta-btn),
+:deep(.cta-button),
+:deep(.detail-button),
+:deep(.quickview-nav button),
+:deep(.contact-form button),
+:deep(.social-pill) {
+  border-radius: 12px;
+  transition:
+    transform 220ms var(--sys-ease),
+    box-shadow 220ms var(--sys-ease),
+    border-color 220ms var(--sys-ease),
+    background-color 220ms var(--sys-ease);
+}
+
+:deep(.btn:hover),
+:deep(.cta-btn:hover),
+:deep(.cta-button:hover),
+:deep(.detail-button:hover),
+:deep(.quickview-nav button:hover),
+:deep(.contact-form button:hover),
+:deep(.social-pill:hover) {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(3, 9, 21, 0.26),
+    0 0 18px rgba(102, 145, 238, 0.24);
+}
+
+:deep(.btn:active),
+:deep(.cta-btn:active),
+:deep(.cta-button:active),
+:deep(.detail-button:active),
+:deep(.quickview-nav button:active),
+:deep(.contact-form button:active),
+:deep(.social-pill:active) {
+  transform: scale(0.985);
+}
+
+:deep(.quickview-overlay) {
+  background: rgba(3, 8, 18, 0.6) !important;
+  backdrop-filter: blur(7px) !important;
+}
+
+:deep(.quickview-modal) {
+  width: min(840px, calc(100vw - 2.4rem)) !important;
+  border-radius: 26px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(219, 231, 255, 0.09),
+    0 34px 70px rgba(3, 8, 18, 0.54),
+    0 0 38px rgba(88, 127, 221, 0.2) !important;
 }
 
 :deep(.page-grid) {
@@ -409,6 +742,53 @@ watch(
   margin: 0.7rem 0 0;
   color: var(--text-secondary);
   line-height: 1.72;
+}
+
+@keyframes globalAmbientShift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 3% -2%, -2% 2%, 1% -1%, 0% 0%;
+  }
+}
+
+@keyframes systemAmbientFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translate3d(10px, -8px, 0) scale(1.04);
+    opacity: 0.18;
+  }
+  100% {
+    transform: translate3d(-8px, 8px, 0) scale(1.06);
+    opacity: 0.14;
+  }
+}
+
+@keyframes globalLightDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(10px, -8px, 0) scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes navTapGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(113, 148, 230, 0);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(113, 148, 230, 0.34);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(113, 148, 230, 0);
+  }
 }
 
 @media (max-width: 1040px) {

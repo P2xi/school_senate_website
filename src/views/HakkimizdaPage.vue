@@ -1,98 +1,4 @@
-﻿<script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import image1 from '@/assets/1.jpeg'
-import image2 from '@/assets/2.jpeg'
-import image3 from '@/assets/3.jpeg'
-import image4 from '@/assets/4.jpeg'
-import image5 from '@/assets/5.jpeg'
-import image6 from '@/assets/6.jpg'
-
-const principles = [
-  {
-    title: 'Öğrenci Temsili',
-    text: 'Açık, erişilebilir ve katılımcı temsil anlayışı',
-  },
-  {
-    title: 'Ortak Akıl',
-    text: 'Öğrenci, yönetim ve topluluklar arasında yapıcı koordinasyon',
-  },
-  {
-    title: 'Sürdürülebilirlik',
-    text: 'Geçici değil, kalıcı etki üreten proje ve süreç yaklaşımı',
-  },
-]
-
-const activities = [
-  {
-    title: 'Proje Geliştirme',
-    text: 'Okul yaşamına katkı sağlayan sosyal, akademik ve organizasyonel projeler geliştiriyoruz.',
-    image: image5,
-    alt: 'Proje geliştirme toplantısından görüntü',
-  },
-  {
-    title: 'Temsil ve İletişim',
-    text: 'Öğrenci taleplerini görünür kılan, düzenli ve yapıcı iletişim süreçleri yürütüyoruz.',
-    image: image2,
-    alt: 'Temsil ve iletişim sürecinden görüntü',
-  },
-  {
-    title: 'Katılım Kültürü',
-    text: 'Öğrencilerin karar süreçlerine daha aktif katılımını destekleyen zemin oluşturuyoruz.',
-    image: image3,
-    alt: 'Öğrenci katılımı etkinliğinden görüntü',
-  },
-]
-
-const miniGallery = [
-  { src: image6, alt: 'Genel kurul anından fotoğraf' },
-  { src: image1, alt: 'Uluslararası simülasyon töreninden fotoğraf' },
-  { src: image4, alt: 'Kurumsal etkinlik sahnesinden fotoğraf' },
-  { src: image5, alt: 'Topluluk buluşmasından fotoğraf' },
-]
-
-const pageRef = ref<HTMLElement | null>(null)
-let revealObserver: IntersectionObserver | null = null
-
-onMounted(async () => {
-  const root = pageRef.value
-  if (!root) return
-
-  await nextTick()
-  requestAnimationFrame(() => {
-    root.classList.add('is-entered')
-  })
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((node) => node.classList.add('is-revealed'))
-    root.querySelectorAll<HTMLElement>('[data-scene]').forEach((node) => node.classList.add('is-scene-revealed'))
-    return
-  }
-
-  revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return
-        entry.target.classList.add('is-revealed')
-        if ((entry.target as HTMLElement).dataset.scene !== undefined) {
-          entry.target.classList.add('is-scene-revealed')
-        }
-        revealObserver?.unobserve(entry.target)
-      })
-    },
-    { threshold: 0.16, rootMargin: '0px 0px -8% 0px' },
-  )
-
-  root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((node) => revealObserver?.observe(node))
-  root.querySelectorAll<HTMLElement>('[data-scene]').forEach((node) => revealObserver?.observe(node))
-})
-
-onBeforeUnmount(() => {
-  revealObserver?.disconnect()
-})
-</script>
-
-<template>
+﻿<template>
   <div ref="pageRef" class="about-page page-stack">
     <div class="ambient-layer" aria-hidden="true">
       <span class="ambient-blob blob-a" />
@@ -192,6 +98,100 @@ onBeforeUnmount(() => {
     </section>
   </div>
 </template>
+
+<script setup lang="ts">
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
+import image1 from '@/assets/1.jpeg'
+import image2 from '@/assets/2.jpeg'
+import image3 from '@/assets/3.jpeg'
+import image4 from '@/assets/4.jpeg'
+import image5 from '@/assets/5.jpeg'
+import image6 from '@/assets/6.jpg'
+
+const principles = [
+  {
+    title: 'Öğrenci Temsili',
+    text: 'Açık, erişilebilir ve katılımcı temsil anlayışı',
+  },
+  {
+    title: 'Ortak Akıl',
+    text: 'Öğrenci, yönetim ve topluluklar arasında yapıcı koordinasyon',
+  },
+  {
+    title: 'Sürdürülebilirlik',
+    text: 'Geçici değil, kalıcı etki üreten proje ve süreç yaklaşımı',
+  },
+]
+
+const activities = [
+  {
+    title: 'Proje Geliştirme',
+    text: 'Okul yaşamına katkı sağlayan sosyal, akademik ve organizasyonel projeler geliştiriyoruz.',
+    image: image5,
+    alt: 'Proje geliştirme toplantısından görüntü',
+  },
+  {
+    title: 'Temsil ve İletişim',
+    text: 'Öğrenci taleplerini görünür kılan, düzenli ve yapıcı iletişim süreçleri yürütüyoruz.',
+    image: image2,
+    alt: 'Temsil ve iletişim sürecinden görüntü',
+  },
+  {
+    title: 'Katılım Kültürü',
+    text: 'Öğrencilerin karar süreçlerine daha aktif katılımını destekleyen zemin oluşturuyoruz.',
+    image: image3,
+    alt: 'Öğrenci katılımı etkinliğinden görüntü',
+  },
+]
+
+const miniGallery = [
+  { src: image6, alt: 'Genel kurul anından fotoğraf' },
+  { src: image1, alt: 'Uluslararası simülasyon töreninden fotoğraf' },
+  { src: image4, alt: 'Kurumsal etkinlik sahnesinden fotoğraf' },
+  { src: image5, alt: 'Topluluk buluşmasından fotoğraf' },
+]
+
+const pageRef = ref<HTMLElement | null>(null)
+let revealObserver: IntersectionObserver | null = null
+
+onMounted(async () => {
+  const root = pageRef.value
+  if (!root) return
+
+  await nextTick()
+  requestAnimationFrame(() => {
+    root.classList.add('is-entered')
+  })
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((node) => node.classList.add('is-revealed'))
+    root.querySelectorAll<HTMLElement>('[data-scene]').forEach((node) => node.classList.add('is-scene-revealed'))
+    return
+  }
+
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        entry.target.classList.add('is-revealed')
+        if ((entry.target as HTMLElement).dataset.scene !== undefined) {
+          entry.target.classList.add('is-scene-revealed')
+        }
+        revealObserver?.unobserve(entry.target)
+      })
+    },
+    { threshold: 0.16, rootMargin: '0px 0px -8% 0px' },
+  )
+
+  root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((node) => revealObserver?.observe(node))
+  root.querySelectorAll<HTMLElement>('[data-scene]').forEach((node) => revealObserver?.observe(node))
+})
+
+onBeforeUnmount(() => {
+  revealObserver?.disconnect()
+})
+</script>
 
 <style scoped>
 .about-page {
@@ -300,15 +300,12 @@ onBeforeUnmount(() => {
 }
 
 .hero-tag {
-  display: inline-block;
   margin: 0;
-  padding: 0.42rem 0.88rem;
-  border-radius: 999px;
-  border: 1px solid rgba(163, 188, 238, 0.32);
-  background: rgba(100, 140, 237, 0.12);
-  color: #d6e5ff;
-  font-size: 0.82rem;
-  font-weight: 600;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 650;
 }
 
 .hero-copy {
@@ -749,7 +746,6 @@ onBeforeUnmount(() => {
   }
 }
 </style>
-
 
 
 

@@ -1,4 +1,137 @@
-﻿<script setup lang="ts">
+﻿<template>
+  <div ref="landingRef" class="landing-page">
+    <div class="ambient-layer" aria-hidden="true">
+      <span class="ambient-blob blob-a" />
+      <span class="ambient-blob blob-b" />
+      <span class="ambient-blob blob-c" />
+      <span class="ambient-blob blob-d" />
+      <span class="ambient-blob blob-e" />
+      <span class="ambient-band band-a" />
+      <span class="ambient-band band-b" />
+      <span class="ambient-orb" />
+      <span class="ambient-streak" />
+      <span class="ambient-grain" />
+    </div>
+
+    <section ref="heroRef" class="hero-section page-section" aria-labelledby="hero-title">
+      <div class="hero-shimmer" aria-hidden="true" />
+      <div class="hero-copy">
+        <p class="hero-kicker">Eskişehir MBA Senatosu</p>
+        <h1 id="hero-title">
+          <span>Öğrenci Temsilinde Güven,</span>
+          <span>Süreçte Disiplin</span>
+        </h1>
+        <p>
+          Eskişehir MBA Senatosu, öğrenci iradesini kurumsal temsil yaklaşımıyla birleştirir; akademik ve
+          sosyal yaşamda ölçülebilir etki üreten proje kültürü inşa eder.
+        </p>
+        <div class="hero-actions">
+          <RouterLink class="btn btn-primary" to="/projeler">Aktif Projeleri İncele</RouterLink>
+          <RouterLink class="btn btn-secondary" to="/duyurular">Resmi Duyuruları Gör</RouterLink>
+        </div>
+      </div>
+
+      <figure class="hero-media">
+        <img :src="image1" alt="Eskişehir MBA Senatosu Avrupa Birliği simülasyonu sertifika töreni" />
+        <div class="hero-media-overlay" aria-hidden="true" />
+        <figcaption>Avrupa Birliği Simülasyonu – Sertifikalı Uluslararası Temsil Deneyimi</figcaption>
+      </figure>
+    </section>
+
+    <section class="stats-section" aria-label="Kurumsal güven göstergeleri" data-scene>
+      <article
+        v-for="(item, index) in stats"
+        :key="item.label"
+        class="stat-card page-section reveal-item"
+        data-reveal
+        :data-stat-index="index"
+        :style="{ '--reveal-delay': `${index * 120}ms` }"
+      >
+        <p class="stat-value">{{ displayedStats[index] || item.value }}</p>
+        <p class="stat-label">{{ item.label }}</p>
+        <p class="stat-detail">{{ item.detail }}</p>
+      </article>
+    </section>
+
+    <section class="projects-section page-section" aria-labelledby="projects-title" data-scene>
+      <div class="section-heading-wrap">
+        <SectionHeading
+          label="Projeler"
+          title="Aktif Projelerimiz"
+          description="Takvim, sorumluluk ve çıktı disipliniyle yürütülen senato projeleri."
+        />
+      </div>
+
+      <div class="projects-grid">
+        <ProjectCard
+          v-for="(project, index) in projects"
+          :key="project.title"
+          class="reveal-item"
+          data-reveal
+          :style="{ '--reveal-delay': `${index * 150}ms` }"
+          :title="project.title"
+          :summary="project.summary"
+          :status="project.status"
+          :action-label="project.actionLabel"
+          :action-to="project.actionTo"
+          :featured="project.featured"
+        />
+      </div>
+    </section>
+
+    <section class="gallery-section" aria-labelledby="gallery-title" data-scene>
+      <div class="section-heading-wrap">
+        <SectionHeading
+          label="Etkinlikler"
+          title="Senato Galerisi"
+          description="Temsil, proje ve katılım kültürünü yansıtan seçili etkinlik kareleri."
+        />
+      </div>
+
+      <div class="gallery-grid">
+        <article
+          v-for="(item, index) in galleryItems"
+          :key="`${item.caption}-${item.note}`"
+          class="gallery-item reveal-item"
+          data-reveal
+          :style="{ '--reveal-delay': `${index * 130}ms` }"
+          :class="{ 'is-featured': item.featured }"
+        >
+          <img :src="item.src" :alt="item.alt" />
+          <div class="gallery-overlay">
+            <p>{{ item.caption }}</p>
+            <span>{{ item.note }}</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="hakkimizda" class="values-section page-section" aria-labelledby="values-title" data-scene>
+      <div>
+        <SectionHeading
+          label="Değer Önerisi"
+          title="Temsili Güçlendiren Çalışma Modeli"
+          description="Öğrenci liderliğini kurumsal kalite ile destekleyen temel yaklaşımımız."
+        />
+      </div>
+
+      <div class="values-grid">
+        <article
+          v-for="(item, index) in values"
+          :key="item.title"
+          class="value-card reveal-item"
+          data-reveal
+          :style="{ '--reveal-delay': `${index * 110}ms` }"
+        >
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import image1 from '@/assets/1.jpeg'
@@ -52,7 +185,6 @@ const projects: Project[] = projectsContent.map((project) => ({
   status: project.status,
   actionLabel: project.status === 'Planlanıyor' ? 'Takvim Detayı' : 'Projeyi İncele',
   actionTo: project.status === 'Planlanıyor' ? '/duyurular' : '/projeler',
-  featured: project.title.includes('Sportfest'),
 }))
 
 const values = [
@@ -224,139 +356,6 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<template>
-  <div ref="landingRef" class="landing-page">
-    <div class="ambient-layer" aria-hidden="true">
-      <span class="ambient-blob blob-a" />
-      <span class="ambient-blob blob-b" />
-      <span class="ambient-blob blob-c" />
-      <span class="ambient-blob blob-d" />
-      <span class="ambient-blob blob-e" />
-      <span class="ambient-band band-a" />
-      <span class="ambient-band band-b" />
-      <span class="ambient-orb" />
-      <span class="ambient-streak" />
-      <span class="ambient-grain" />
-    </div>
-
-    <section ref="heroRef" class="hero-section page-section" aria-labelledby="hero-title">
-      <div class="hero-shimmer" aria-hidden="true" />
-      <div class="hero-copy">
-        <p class="hero-kicker">Eskişehir MBA Senatosu</p>
-        <h1 id="hero-title">
-          <span>Öğrenci Temsilinde Güven,</span>
-          <span>Süreçte Disiplin</span>
-        </h1>
-        <p>
-          Eskişehir MBA Senatosu, öğrenci iradesini kurumsal temsil yaklaşımıyla birleştirir; akademik ve
-          sosyal yaşamda ölçülebilir etki üreten proje kültürü inşa eder.
-        </p>
-        <div class="hero-actions">
-          <RouterLink class="btn btn-primary" to="/projeler">Aktif Projeleri İncele</RouterLink>
-          <RouterLink class="btn btn-secondary" to="/duyurular">Resmi Duyuruları Gör</RouterLink>
-        </div>
-      </div>
-
-      <figure class="hero-media">
-        <img :src="image1" alt="Eskişehir MBA Senatosu Avrupa Birliği simülasyonu sertifika töreni" />
-        <div class="hero-media-overlay" aria-hidden="true" />
-        <figcaption>Avrupa Birliği Simülasyonu – Sertifikalı Uluslararası Temsil Deneyimi</figcaption>
-      </figure>
-    </section>
-
-    <section class="stats-section" aria-label="Kurumsal güven göstergeleri" data-scene>
-      <article
-        v-for="(item, index) in stats"
-        :key="item.label"
-        class="stat-card page-section reveal-item"
-        data-reveal
-        :data-stat-index="index"
-        :style="{ '--reveal-delay': `${index * 120}ms` }"
-      >
-        <p class="stat-value">{{ displayedStats[index] || item.value }}</p>
-        <p class="stat-label">{{ item.label }}</p>
-        <p class="stat-detail">{{ item.detail }}</p>
-      </article>
-    </section>
-
-    <section class="projects-section page-section" aria-labelledby="projects-title" data-scene>
-      <div class="section-heading-wrap">
-        <SectionHeading
-          label="Projeler"
-          title="Aktif Projelerimiz"
-          description="Takvim, sorumluluk ve çıktı disipliniyle yürütülen senato projeleri."
-        />
-      </div>
-
-      <div class="projects-grid">
-        <ProjectCard
-          v-for="(project, index) in projects"
-          :key="project.title"
-          class="reveal-item"
-          data-reveal
-          :style="{ '--reveal-delay': `${index * 150}ms` }"
-          :title="project.title"
-          :summary="project.summary"
-          :status="project.status"
-          :action-label="project.actionLabel"
-          :action-to="project.actionTo"
-          :featured="project.featured"
-        />
-      </div>
-    </section>
-
-    <section class="gallery-section" aria-labelledby="gallery-title" data-scene>
-      <div class="section-heading-wrap">
-        <SectionHeading
-          label="Etkinlikler"
-          title="Senato Galerisi"
-          description="Temsil, proje ve katılım kültürünü yansıtan seçili etkinlik kareleri."
-        />
-      </div>
-
-      <div class="gallery-grid">
-        <article
-          v-for="(item, index) in galleryItems"
-          :key="`${item.caption}-${item.note}`"
-          class="gallery-item reveal-item"
-          data-reveal
-          :style="{ '--reveal-delay': `${index * 130}ms` }"
-          :class="{ 'is-featured': item.featured }"
-        >
-          <img :src="item.src" :alt="item.alt" />
-          <div class="gallery-overlay">
-            <p>{{ item.caption }}</p>
-            <span>{{ item.note }}</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="hakkimizda" class="values-section page-section" aria-labelledby="values-title" data-scene>
-      <div>
-        <SectionHeading
-          label="Değer Önerisi"
-          title="Temsili Güçlendiren Çalışma Modeli"
-          description="Öğrenci liderliğini kurumsal kalite ile destekleyen temel yaklaşımımız."
-        />
-      </div>
-
-      <div class="values-grid">
-        <article
-          v-for="(item, index) in values"
-          :key="item.title"
-          class="value-card reveal-item"
-          data-reveal
-          :style="{ '--reveal-delay': `${index * 110}ms` }"
-        >
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
-    </section>
-  </div>
-</template>
-
 <style scoped>
 .landing-page {
   --scroll-shift: 0px;
@@ -365,65 +364,97 @@ onBeforeUnmount(() => {
   gap: clamp(2.15rem, 3.15vw, 3.2rem);
   position: relative;
   overflow: visible;
+  background: transparent;
+}
+
+.landing-page::before {
+  content: '';
+  position: fixed;
+  inset: -12% -10% -12% -14%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 18% 16%, rgba(110, 150, 236, 0.075), rgba(110, 150, 236, 0) 44%),
+    radial-gradient(ellipse at 84% 78%, rgba(92, 120, 196, 0.05), rgba(92, 120, 196, 0) 40%);
+}
+
+.landing-page::after {
+  content: '';
+  position: absolute;
+  left: -4%;
+  right: -6%;
+  top: 6%;
+  height: min(280px, 26vw);
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 40% 44%, rgba(129, 164, 238, 0.05), rgba(129, 164, 238, 0) 68%),
+    linear-gradient(90deg, rgba(68, 108, 190, 0.055) 0%, rgba(68, 108, 190, 0.03) 44%, rgba(68, 108, 190, 0.01) 72%, rgba(68, 108, 190, 0) 100%);
+  filter: blur(42px);
 }
 
 .ambient-layer {
-  position: absolute;
-  inset: -8%;
+  position: fixed;
+  inset: -24% -18% -20% -26%;
   pointer-events: none;
   z-index: 0;
   overflow: visible;
 }
 
+.ambient-layer > :not(.blob-a):not(.blob-d):not(.band-a) {
+  display: none;
+}
+
 .ambient-blob {
   position: absolute;
   border-radius: 999px;
-  filter: blur(72px);
-  opacity: 0.58;
-  animation: ambientDrift 15s var(--motion-ease) infinite alternate;
+  filter: blur(96px);
+  opacity: 0.1;
+  animation: ambientDrift 10s var(--motion-ease) infinite alternate;
 }
 
 .blob-a {
-  width: min(560px, 44vw);
-  height: min(420px, 35vw);
-  left: -10%;
-  top: calc(4% + var(--scroll-shift) * -0.2);
-  background: radial-gradient(ellipse at 35% 40%, rgba(71, 124, 235, 0.24), rgba(71, 124, 235, 0) 72%);
+  width: min(1080px, 82vw);
+  height: min(820px, 64vw);
+  left: -26%;
+  top: -12%;
+  background: radial-gradient(ellipse at 34% 36%, rgba(98, 142, 235, 0.11), rgba(98, 142, 235, 0) 78%);
+  animation: heroBackGlowDrift 8s var(--motion-ease) infinite alternate;
 }
 
 .blob-b {
-  width: min(460px, 36vw);
-  height: min(380px, 30vw);
-  right: -9%;
-  bottom: calc(3% + var(--scroll-shift) * 0.3);
-  background: radial-gradient(ellipse at 65% 55%, rgba(87, 96, 196, 0.2), rgba(87, 96, 196, 0) 74%);
+  width: min(360px, 28vw);
+  height: min(280px, 22vw);
+  right: -10%;
+  bottom: calc(16% + var(--scroll-shift) * 0.2);
+  background: radial-gradient(ellipse at 65% 55%, rgba(87, 96, 196, 0.08), rgba(87, 96, 196, 0) 78%);
   animation-duration: 16s;
 }
 
 .blob-c {
-  width: min(320px, 30vw);
-  height: min(250px, 24vw);
-  left: 46%;
-  top: calc(18% + var(--scroll-shift) * -0.16);
-  background: radial-gradient(ellipse at 50% 50%, rgba(96, 132, 218, 0.14), rgba(96, 132, 218, 0) 72%);
+  width: min(320px, 28vw);
+  height: min(220px, 20vw);
+  left: 40%;
+  top: calc(10% + var(--scroll-shift) * -0.08);
+  background: radial-gradient(ellipse at 50% 50%, rgba(96, 132, 218, 0.06), rgba(96, 132, 218, 0) 78%);
   animation-duration: 12s;
 }
 
 .blob-d {
-  width: min(360px, 30vw);
-  height: min(300px, 24vw);
-  right: 24%;
-  top: calc(56% + var(--scroll-shift) * 0.18);
-  background: radial-gradient(ellipse at 42% 54%, rgba(120, 104, 192, 0.14), rgba(120, 104, 192, 0) 76%);
-  animation-duration: 18s;
+  width: min(320px, 26vw);
+  height: min(240px, 20vw);
+  right: 8%;
+  top: calc(70% + var(--scroll-shift) * 0.08);
+  background: radial-gradient(ellipse at 42% 54%, rgba(120, 104, 192, 0.06), rgba(120, 104, 192, 0) 82%);
+  animation: ambientDrift 14s var(--motion-ease) infinite alternate-reverse;
 }
 
 .blob-e {
-  width: min(430px, 36vw);
-  height: min(340px, 30vw);
+  width: min(340px, 30vw);
+  height: min(260px, 24vw);
   left: 22%;
   bottom: calc(-6% + var(--scroll-shift) * 0.16);
-  background: radial-gradient(ellipse at 40% 50%, rgba(55, 106, 218, 0.16), rgba(55, 106, 218, 0) 75%);
+  background: radial-gradient(ellipse at 40% 50%, rgba(55, 106, 218, 0.06), rgba(55, 106, 218, 0) 78%);
   animation-duration: 13s;
 }
 
@@ -431,25 +462,25 @@ onBeforeUnmount(() => {
   position: absolute;
   pointer-events: none;
   border-radius: 999px;
-  filter: blur(32px);
-  opacity: 0.2;
+  filter: blur(40px);
+  opacity: 0.04;
 }
 
 .band-a {
-  width: min(760px, 62vw);
-  height: 150px;
-  left: -12%;
-  top: 4%;
-  background: linear-gradient(112deg, rgba(64, 122, 245, 0.12), rgba(218, 230, 255, 0.2), rgba(64, 122, 245, 0.08));
+  width: min(980px, 76vw);
+  height: 190px;
+  left: -22%;
+  top: -2%;
+  background: linear-gradient(110deg, rgba(64, 122, 245, 0.038), rgba(218, 230, 255, 0.048), rgba(64, 122, 245, 0.012));
   animation: bandSweep 11s var(--motion-ease) infinite alternate;
 }
 
 .band-b {
-  width: min(640px, 52vw);
-  height: 130px;
+  width: min(560px, 44vw);
+  height: 110px;
   right: -10%;
-  top: 36%;
-  background: linear-gradient(120deg, rgba(98, 94, 196, 0.1), rgba(206, 219, 255, 0.16), rgba(76, 122, 228, 0.08));
+  top: 42%;
+  background: linear-gradient(120deg, rgba(98, 94, 196, 0.06), rgba(206, 219, 255, 0.1), rgba(76, 122, 228, 0.05));
   animation: bandSweepReverse 14s var(--motion-ease) infinite alternate;
 }
 
@@ -504,7 +535,8 @@ onBeforeUnmount(() => {
   transform: translateY(0) scale(1) rotate(0deg);
 }
 
-.hero-section {
+.hero-section,
+.hero-section.page-section {
   --parallax-x: 0px;
   --parallax-y: 0px;
   display: grid;
@@ -512,9 +544,9 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: clamp(1.45rem, 2.4vw, 2.15rem);
   padding: clamp(1.05rem, 1.8vw, 1.55rem);
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
   position: relative;
   isolation: isolate;
   overflow: visible;
@@ -523,32 +555,17 @@ onBeforeUnmount(() => {
 .hero-section::before {
   content: '';
   position: absolute;
-  left: -9%;
-  top: -18%;
-  width: min(620px, 52vw);
-  height: min(460px, 42vw);
-  border-radius: 999px;
-  background: radial-gradient(ellipse at 42% 44%, rgba(75, 129, 240, 0.26), rgba(75, 129, 240, 0) 72%);
-  filter: blur(42px);
+  inset: -26% -12% -30% -20%;
   pointer-events: none;
   z-index: 0;
-  transform: translate3d(calc(var(--parallax-x) * 0.22), calc(var(--parallax-y) * 0.18), 0);
-  animation: heroAuraBreathe 8.5s var(--motion-ease) infinite;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 34% 36%, rgba(102, 148, 241, 0.16), rgba(102, 148, 241, 0) 74%);
+  filter: blur(70px);
+  animation: heroBackGlowDrift 12s var(--motion-ease) infinite alternate;
 }
 
 .hero-section::after {
-  content: '';
-  position: absolute;
-  right: -8%;
-  top: 6%;
-  width: min(480px, 40vw);
-  height: min(280px, 24vw);
-  border-radius: 999px;
-  background: radial-gradient(ellipse at 62% 50%, rgba(97, 112, 226, 0.2), rgba(97, 112, 226, 0) 74%);
-  filter: blur(34px);
-  pointer-events: none;
-  z-index: 0;
-  animation: heroSweep 9.5s var(--motion-ease) infinite alternate;
+  display: none;
 }
 
 .landing-page > *:not(.ambient-layer),
@@ -872,26 +889,6 @@ onBeforeUnmount(() => {
 .stat-detail { margin: 0.54rem 0 0; color: rgba(166, 183, 214, 0.86); font-size: 0.77rem; line-height: 1.58; max-width: 30ch; }
 
 .projects-section { display: grid; gap: 1.08rem; position: relative; overflow: visible; }
-.projects-section::before {
-  content: '';
-  width: 150px;
-  height: 3px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(157, 188, 245, 0.9), rgba(157, 188, 245, 0));
-  box-shadow: 0 0 18px rgba(101, 140, 224, 0.45);
-  animation: accentPulse 8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  opacity: 0;
-  transform: scaleX(0.62);
-  transform-origin: left center;
-  transition:
-    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.projects-section.is-scene-revealed::before {
-  opacity: 1;
-  transform: scaleX(1);
-}
 
 .projects-section::after {
   content: '';
@@ -911,26 +908,6 @@ onBeforeUnmount(() => {
 .projects-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.88rem, 1.55vw, 1.12rem); }
 
 .gallery-section { display: grid; gap: 1.14rem; margin-top: 0.3rem; position: relative; overflow: visible; }
-.gallery-section::before {
-  content: '';
-  width: 150px;
-  height: 3px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(157, 188, 245, 0.9), rgba(157, 188, 245, 0));
-  box-shadow: 0 0 18px rgba(101, 140, 224, 0.45);
-  animation: accentPulse 9.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  opacity: 0;
-  transform: scaleX(0.62);
-  transform-origin: left center;
-  transition:
-    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.gallery-section.is-scene-revealed::before {
-  opacity: 1;
-  transform: scaleX(1);
-}
 
 .gallery-section::after {
   content: '';
@@ -1067,9 +1044,15 @@ onBeforeUnmount(() => {
 }
 
 @keyframes ambientDrift {
-  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.58; }
-  50% { transform: translate3d(12px, -8px, 0) scale(1.04); opacity: 0.7; }
-  100% { transform: translate3d(-6px, 10px, 0) scale(1.08); opacity: 0.62; }
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.06; }
+  50% { transform: translate3d(12px, -8px, 0) scale(1.04); opacity: 0.09; }
+  100% { transform: translate3d(-6px, 10px, 0) scale(1.08); opacity: 0.065; }
+}
+
+@keyframes heroBackGlowDrift {
+  0% { transform: translate3d(-10px, -6px, 0) scale(0.98); opacity: 0.055; }
+  50% { transform: translate3d(18px, 10px, 0) scale(1.06); opacity: 0.09; }
+  100% { transform: translate3d(-4px, 20px, 0) scale(1.02); opacity: 0.06; }
 }
 
 @keyframes heroAuraBreathe {
@@ -1087,11 +1070,6 @@ onBeforeUnmount(() => {
   50% { opacity: 0.88; transform: scale(1.04); }
 }
 
-@keyframes accentPulse {
-  0%, 100% { opacity: 0.75; transform: scaleX(1); }
-  50% { opacity: 1; transform: scaleX(1.06); }
-}
-
 @keyframes sectionDrift {
   0% { transform: translate3d(-8px, 0, 0) scale(1); opacity: 0.62; }
   100% { transform: translate3d(12px, -6px, 0) scale(1.05); opacity: 0.9; }
@@ -1103,13 +1081,13 @@ onBeforeUnmount(() => {
 }
 
 @keyframes bandSweep {
-  0% { transform: translate3d(-24px, 12px, 0) rotate(-8deg); opacity: 0.16; }
-  100% { transform: translate3d(28px, -12px, 0) rotate(-8deg); opacity: 0.28; }
+  0% { transform: translate3d(-24px, 12px, 0) rotate(-8deg); opacity: 0.03; }
+  100% { transform: translate3d(28px, -12px, 0) rotate(-8deg); opacity: 0.06; }
 }
 
 @keyframes bandSweepReverse {
-  0% { transform: translate3d(18px, -10px, 0) rotate(-12deg); opacity: 0.12; }
-  100% { transform: translate3d(-20px, 10px, 0) rotate(-12deg); opacity: 0.24; }
+  0% { transform: translate3d(18px, -10px, 0) rotate(-12deg); opacity: 0.025; }
+  100% { transform: translate3d(-20px, 10px, 0) rotate(-12deg); opacity: 0.05; }
 }
 
 @keyframes orbPulse {
@@ -1193,9 +1171,7 @@ onBeforeUnmount(() => {
   .section-heading-wrap::after,
   .hero-section::after,
   .hero-section::before,
-  .projects-section::before,
   .projects-section::after,
-  .gallery-section::before,
   .gallery-section::after,
   .stats-section::before,
   .values-section::before {
