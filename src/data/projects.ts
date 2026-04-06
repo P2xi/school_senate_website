@@ -19,16 +19,17 @@ export const projectsContent: ProjectContent[] = [
     homeDescription: 'Dört branşta takımların yarıştığı çok alanlı, okullar arası spor organizasyonu.',
     projectsDescription:
       'Farklı okulların dört branşta takımlar oluşturarak yarıştığı çok alanlı spor organizasyonu.',
-    detailTo: '/projeler?sportfest',
+    detailTo: '/projeler/sporfest',
   },
   {
-    title: 'LÖSEV Farkındalık Çalıştayı Serisi',
+    title: 'Avrupa Birliği Simülasyonu Programı',
     status: 'Yakında',
-    category: 'Sosyal Sorumluluk',
-    homeDescription: 'Öğrencileri sosyal projelere dahil eden toplumsal farkındalık odaklı çalıştay serisi.',
+    category: 'Organizasyon',
+    homeDescription:
+      'Öğrencilerin diplomasi, müzakere ve karar alma becerilerini geliştirdiği çok komiteli simülasyon programı.',
     projectsDescription:
-      'Toplumsal farkındalık odağında planlanan ve öğrencileri sosyal projelere dahil eden çalıştay serisi.',
-    detailTo: '/projeler?losev',
+      'Avrupa Birliği kurumlarını modelleyen komitelerde, temsil ve karar süreçlerine odaklanan uygulamalı simülasyon programı.',
+    detailTo: '/projeler/avrupa-birligi-simulasyonu',
   },
   {
     title: 'Senato Karar Takip Paneli',

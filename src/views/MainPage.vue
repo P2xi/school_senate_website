@@ -184,7 +184,7 @@ const projects: Project[] = projectsContent.map((project) => ({
   summary: project.homeDescription,
   status: project.status,
   actionLabel: project.status === 'Planlanıyor' ? 'Takvim Detayı' : 'Projeyi İncele',
-  actionTo: project.status === 'Planlanıyor' ? '/duyurular' : '/projeler',
+  actionTo: project.status === 'Planlanıyor' ? '/duyurular' : project.detailTo,
 }))
 
 const values = [
