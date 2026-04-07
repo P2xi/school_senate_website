@@ -24,6 +24,7 @@ const router = createRouter({
         {
           path: 'projeler/avrupa-birligi-simulasyonu',
           name: 'eu-simulation',
+          alias: ['/ab', '/projects/ab-simulasyon'],
           component: AvrupaBirligiSimulasyonuPage,
         },
         { path: 'duyurular', name: 'announcements', component: DuyurularPage },

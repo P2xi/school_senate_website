@@ -2,8 +2,10 @@
   <article class="timeline-step" :class="{ reverse }">
     <div class="copy-wrap">
       <p class="step-badge">{{ step }}</p>
-      <h3>{{ title }}</h3>
-      <p class="text">{{ text }}</p>
+      <div class="copy-main">
+        <h3>{{ title }}</h3>
+        <p class="text">{{ text }}</p>
+      </div>
       <span v-if="detail" class="detail">{{ detail }}</span>
     </div>
 
@@ -29,11 +31,17 @@ defineProps<{
 
 <style scoped>
 .timeline-step {
+  --step-card-min: clamp(270px, 30vw, 338px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(0.82rem, 1.7vw, 1.25rem);
-  align-items: stretch;
+  gap: clamp(1.6rem, 2.4vw, 2.1rem);
+  align-items: start;
   position: relative;
+  min-height: var(--step-card-min);
+}
+
+.timeline-step > * {
+  min-width: 0;
 }
 
 .timeline-step.reverse .copy-wrap {
@@ -45,23 +53,30 @@ defineProps<{
 }
 
 .copy-wrap {
-  display: grid;
-  align-content: center;
-  gap: 0.72rem;
-  min-height: clamp(250px, 31vw, 320px);
-  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.82rem;
+  min-height: var(--step-card-min);
+  height: 100%;
+  border-radius: 20px;
   border: 1px solid rgba(179, 204, 248, 0.24);
   background:
     radial-gradient(circle at 10% 10%, rgba(126, 162, 240, 0.16), rgba(126, 162, 240, 0) 44%),
     linear-gradient(166deg, rgba(18, 33, 59, 0.9), rgba(12, 23, 44, 0.92));
   backdrop-filter: blur(10px);
-  padding: clamp(1.1rem, 2.5vw, 1.7rem);
+  padding: clamp(1.2rem, 2.3vw, 1.6rem);
   box-shadow:
-    0 16px 30px rgba(4, 10, 22, 0.28),
+    0 18px 34px rgba(4, 10, 22, 0.3),
     inset 0 1px 0 rgba(212, 226, 254, 0.06);
   transition:
     border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.copy-main {
+  display: grid;
+  gap: 0.66rem;
 }
 
 .step-badge {
@@ -115,8 +130,9 @@ h3 {
 .media-wrap {
   margin: 0;
   position: relative;
-  min-height: clamp(250px, 31vw, 320px);
-  border-radius: 22px;
+  min-height: var(--step-card-min);
+  height: 100%;
+  border-radius: 20px;
   overflow: hidden;
   aspect-ratio: 4 / 3;
   border: 1px solid rgba(179, 204, 248, 0.24);
@@ -169,7 +185,7 @@ h3 {
   .timeline-step,
   .timeline-step.reverse {
     grid-template-columns: 1fr;
-    gap: 0.7rem;
+    gap: 0.9rem;
   }
 
   .timeline-step.reverse .copy-wrap,

@@ -7,22 +7,54 @@
     </div>
 
     <section ref="heroRef" class="hero" data-scene>
-      <img class="hero-image" :src="heroImage" alt="Avrupa Birliği Simülasyonu hero görseli" loading="eager" />
+      <img
+        class="hero-image"
+        :src="heroImage"
+        alt="Avrupa Birliği Simülasyonu hero görseli"
+        loading="eager"
+      />
       <span class="hero-overlay" aria-hidden="true" />
       <span class="hero-reflection" aria-hidden="true" />
 
       <div class="hero-content content-shell">
-        <p class="hero-kicker reveal-item" data-reveal>Eskişehir MBA Senatosu / Proje Detayı</p>
-        <h1 class="hero-title reveal-item" data-reveal style="--reveal-delay: 60ms">Avrupa Birliği Simülasyonu</h1>
-        <p class="hero-subtitle reveal-item" data-reveal style="--reveal-delay: 120ms">
-          Müzakere, temsil ve karar üretim disiplinini tek bir kurumsal akışta birleştiren;
-          delegelere yüksek tempolu, ölçülebilir ve profesyonel bir deneyim sunan proje.
+        <p class="hero-kicker reveal-item" data-reveal>
+          Eskişehir MBA Senatosu / Proje Detayı
+        </p>
+        <h1
+          class="hero-title reveal-item"
+          data-reveal
+          style="--reveal-delay: 60ms"
+        >
+          Avrupa Birliği Simülasyonu
+        </h1>
+        <p
+          class="hero-subtitle reveal-item"
+          data-reveal
+          style="--reveal-delay: 120ms"
+        >
+          Müzakere, temsil ve karar üretim disiplinini tek bir kurumsal akışta
+          deneyimleyin.
         </p>
 
-        <div class="hero-actions reveal-item" data-reveal style="--reveal-delay: 180ms">
-          <a class="btn btn-primary" href="#akis">Projeyi İncele</a>
-          <RouterLink class="btn btn-secondary" to="/duyurular">Takvimi Gör</RouterLink>
+        <div
+          class="hero-actions reveal-item"
+          data-reveal
+          style="--reveal-delay: 180ms"
+        >
+          <RouterLink class="btn btn-primary" to="/iletisim"
+            >Başvuru Yap</RouterLink
+          >
+          <RouterLink class="btn btn-secondary" to="/duyurular"
+            >Takvimi Gör</RouterLink
+          >
         </div>
+        <p
+          class="hero-proof reveal-item"
+          data-reveal
+          style="--reveal-delay: 220ms"
+        >
+          Sınırlı kontenjan • Seçmeli katılım • Sertifikalı program
+        </p>
       </div>
     </section>
 
@@ -86,18 +118,31 @@
           <p class="showcase-kicker">Kritik Aşama</p>
           <h2>Final Oturumunda Karar Mimarisinin Netleştiği An</h2>
           <p>
-            Komite önerileri tek kurul altında birleştirilir; uzlaşı maddeleri ve karar başlıkları kurumsal bir
-            protokol akışıyla nihai hale getirilir.
+            Komite önerileri tek kurul altında birleştirilir; uzlaşı maddeleri
+            ve karar başlıkları kurumsal bir protokol akışıyla nihai hale
+            getirilir.
           </p>
         </div>
 
-        <figure class="showcase-frame reveal-item" data-reveal style="--reveal-delay: 70ms">
-          <img :src="highlightImage" alt="Avrupa Birliği Simülasyonu karar oturumu" loading="lazy" decoding="async" />
+        <figure
+          class="showcase-frame reveal-item"
+          data-reveal
+          style="--reveal-delay: 70ms"
+        >
+          <img
+            :src="highlightImage"
+            alt="Avrupa Birliği Simülasyonu karar oturumu"
+            loading="lazy"
+            decoding="async"
+          />
           <span class="showcase-overlay" aria-hidden="true" />
           <figcaption class="showcase-caption">
             <p class="caption-kicker">Final Oturumu</p>
             <h3>Komite Çıktılarının Birleştiği Karar Anı</h3>
-            <p>Karar paketi, oylama ve son değerlendirme ile tek bir final çerçevesinde tamamlanır.</p>
+            <p>
+              Karar paketi, oylama ve son değerlendirme ile tek bir final
+              çerçevesinde tamamlanır.
+            </p>
           </figcaption>
         </figure>
       </div>
@@ -126,7 +171,11 @@
       </div>
     </section>
 
-    <section class="final-section content-shell reveal-item" data-reveal data-scene>
+    <section
+      class="final-section content-shell reveal-item"
+      data-reveal
+      data-scene
+    >
       <CTASection
         kicker="Son Adım"
         title="Bir Sonraki Oturumda Delegasyonun Parçası Ol"
@@ -141,200 +190,217 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import abHero from '@/assets/ab/1-CeGeYkHV.jpeg'
-import ab2 from '@/assets/ab/ab (2).png'
-import ab3 from '@/assets/ab/ab (3).png'
-import ab4 from '@/assets/ab/ab (4).png'
-import ab5 from '@/assets/ab/ab (5).png'
-import CTASection from '@/components/eu/CTASection.vue'
-import HighlightCard from '@/components/eu/HighlightCard.vue'
-import MetricCard from '@/components/eu/MetricCard.vue'
-import SectionHeader from '@/components/eu/SectionHeader.vue'
-import TimelineStep from '@/components/eu/TimelineStep.vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { RouterLink } from "vue-router";
+import abHero from "@/assets/ab/1-CeGeYkHV.jpeg";
+import ab2 from "@/assets/ab/ab (2).png";
+import ab3 from "@/assets/ab/ab (3).png";
+import ab4 from "@/assets/ab/ab (4).png";
+import ab5 from "@/assets/ab/ab (5).png";
+import CTASection from "@/components/eu/CTASection.vue";
+import HighlightCard from "@/components/eu/HighlightCard.vue";
+import MetricCard from "@/components/eu/MetricCard.vue";
+import SectionHeader from "@/components/eu/SectionHeader.vue";
+import TimelineStep from "@/components/eu/TimelineStep.vue";
 
 type TimelineItem = {
-  title: string
-  text: string
-  detail: string
-  image: string
-  alt: string
-  imagePosition: string
-}
+  title: string;
+  text: string;
+  detail: string;
+  image: string;
+  alt: string;
+  imagePosition: string;
+};
 
-const heroImage = abHero
-const highlightImage = ab5
+const heroImage = abHero;
+const highlightImage = ab5;
 
 const metrics = [
   {
-    icon: '◎',
-    value: '120+',
-    label: 'Katılımcı',
-    description: 'Komite ve gözlemci dahil geniş delegasyon katılımı',
+    icon: "◎",
+    value: "120+",
+    label: "Katılımcı",
+    description: "Komite ve gözlemci dahil güçlü delegasyon",
   },
   {
-    icon: '◌',
-    value: '8',
-    label: 'Oturum',
-    description: 'Hazırlık, komite ve genel kurul dahil yapılandırılmış oturum',
+    icon: "◌",
+    value: "8",
+    label: "Oturum",
+    description: "Hazırlık, komite ve genel kurul akışı",
   },
   {
-    icon: '◇',
-    value: '3 Hafta',
-    label: 'Hazırlık Süreci',
-    description: 'Rol eşleştirme, gündem dosyaları ve ön değerlendirme safhası',
+    icon: "◇",
+    value: "3 Hafta",
+    label: "Hazırlık Süreci",
+    description: "Rol eşleştirme ve gündem hazırlık fazı",
   },
   {
-    icon: '◈',
-    value: '12',
-    label: 'Karar Başlığı',
-    description: 'Komite çıktılarından filtrelenmiş final politika gündemleri',
+    icon: "◈",
+    value: "12",
+    label: "Karar Başlığı",
+    description: "Final oturumuna taşınan politika başlıkları",
   },
-]
+];
 
 const timelineSteps: TimelineItem[] = [
   {
-    title: 'Hazırlık ve Delegasyon Kurulumu',
-    text: 'Delegeler komite rollerine yerleştirilir, konu setleri paylaşılır ve müzakere usulleri ortak bir çerçevede netleştirilir.',
-    detail: 'Faz 1 · Ön Hazırlık',
+    title: "Hazırlık ve Delegasyon Kurulumu",
+    text: "Delegeler komite rollerine yerleştirilir, konu setleri paylaşılır ve müzakere usulleri ortak bir çerçevede netleştirilir.",
+    detail: "Faz 1 · Ön Hazırlık",
     image: ab2,
-    alt: 'Hazırlık oturumunda delegeler',
-    imagePosition: '50% 42%',
+    alt: "Hazırlık oturumunda delegeler",
+    imagePosition: "45% 20%",
   },
   {
-    title: 'Komite Bazlı Müzakere Maratonu',
-    text: 'Taslak metinler değerlendirilir, değişiklik önerileri tartışılır ve uzlaşı alanları veri destekli argümanlarla daraltılır.',
-    detail: 'Faz 2 · Komite Süreci',
+    title: "Müzakere Maratonu",
+    text: "Taslak metinler değerlendirilir, değişiklik önerileri tartışılır ve uzlaşı alanları veri destekli argümanlarla daraltılır.",
+    detail: "Faz 2 · Süreç",
     image: ab3,
-    alt: 'Komite müzakereleri sırasında delegeler',
-    imagePosition: '52% 40%',
+    alt: "Müzakereler sırasında delegeler",
+    imagePosition: "52% 40%",
   },
   {
-    title: 'Genel Kurul ve Nihai Karar Oturumu',
-    text: 'Komitelerden gelen çıktılar genel kurulda savunulur; oylama ve karar protokolüyle proje kapanış metni oluşturulur.',
-    detail: 'Faz 3 · Final Oturumu',
+    title: "Genel Kurul ve Nihai Karar Oturumu",
+    text: "Komitelerden gelen çıktılar genel kurulda savunulur; oylama ve karar protokolüyle proje kapanış metni oluşturulur.",
+    detail: "Faz 3 · Final Oturumu",
     image: ab4,
-    alt: 'Genel kurul konuşma anı',
-    imagePosition: '50% 38%',
+    alt: "Genel kurul konuşma anı",
+    imagePosition: "50% 20%",
   },
-]
+];
 
 const impactCards = [
   {
-    icon: '◍',
-    title: 'Eleştirel düşünme',
-    text: 'Delegeler, çok kaynaklı veriyi yorumlayıp savlarını kanıta dayalı şekilde inşa eder.',
+    icon: "◍",
+    title: "Eleştirel düşünme",
+    text: "Delegeler, çok kaynaklı veriyi yorumlayıp savlarını kanıta dayalı şekilde inşa eder.",
   },
   {
-    icon: '◔',
-    title: 'Diplomatik tartışma',
-    text: 'Farklı pozisyonlar arasında uzlaşı arayan yapılandırılmış müzakere refleksi güçlenir.',
+    icon: "◔",
+    title: "Diplomatik tartışma",
+    text: "Farklı pozisyonlar arasında uzlaşı arayan yapılandırılmış müzakere refleksi güçlenir.",
   },
   {
-    icon: '◒',
-    title: 'Kurumsal temsil',
-    text: 'Katılımcılar, resmî oturum dili ve temsil sorumluluğu ile profesyonel görünürlük kazanır.',
+    icon: "◒",
+    title: "Kurumsal temsil",
+    text: "Katılımcılar, resmî oturum dili ve temsil sorumluluğu ile profesyonel görünürlük kazanır.",
   },
-]
+];
 
-const pageRef = ref<HTMLElement | null>(null)
-const heroRef = ref<HTMLElement | null>(null)
+const pageRef = ref<HTMLElement | null>(null);
+const heroRef = ref<HTMLElement | null>(null);
 
-let revealObserver: IntersectionObserver | null = null
-let scrollRaf = 0
+let revealObserver: IntersectionObserver | null = null;
+let scrollRaf = 0;
 
 const handleScrollEffects = () => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const root = pageRef.value
-  const hero = heroRef.value
-  if (!root || !hero) return
+  const root = pageRef.value;
+  const hero = heroRef.value;
+  if (!root || !hero) return;
 
-  const scrollY = window.scrollY
-  const heroShift = Math.min(22, scrollY * 0.024)
-  const glowShift = Math.min(16, scrollY * 0.015)
+  const scrollY = window.scrollY;
+  const heroShift = Math.min(22, scrollY * 0.024);
+  const glowShift = Math.min(16, scrollY * 0.015);
 
-  cancelAnimationFrame(scrollRaf)
+  cancelAnimationFrame(scrollRaf);
   scrollRaf = requestAnimationFrame(() => {
-    root.style.setProperty('--hero-shift', `${heroShift.toFixed(2)}px`)
-    root.style.setProperty('--glow-shift', `${glowShift.toFixed(2)}px`)
-  })
-}
+    root.style.setProperty("--hero-shift", `${heroShift.toFixed(2)}px`);
+    root.style.setProperty("--glow-shift", `${glowShift.toFixed(2)}px`);
+  });
+};
 
 onMounted(async () => {
-  const root = pageRef.value
-  if (!root) return
+  const root = pageRef.value;
+  if (!root) return;
 
-  await nextTick()
+  await nextTick();
   requestAnimationFrame(() => {
-    root.classList.add('is-entered')
-  })
+    root.classList.add("is-entered");
+  });
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((node) => node.classList.add('is-revealed'))
-    root.querySelectorAll<HTMLElement>('[data-scene]').forEach((node) => node.classList.add('is-scene-revealed'))
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    root
+      .querySelectorAll<HTMLElement>("[data-reveal]")
+      .forEach((node) => node.classList.add("is-revealed"));
+    root
+      .querySelectorAll<HTMLElement>("[data-scene]")
+      .forEach((node) => node.classList.add("is-scene-revealed"));
   } else {
     revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return
-          entry.target.classList.add('is-revealed')
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-revealed");
           if ((entry.target as HTMLElement).dataset.scene !== undefined) {
-            entry.target.classList.add('is-scene-revealed')
+            entry.target.classList.add("is-scene-revealed");
           }
-          revealObserver?.unobserve(entry.target)
-        })
+          revealObserver?.unobserve(entry.target);
+        });
       },
-      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' },
-    )
+      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
+    );
 
-    root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((node) => revealObserver?.observe(node))
-    root.querySelectorAll<HTMLElement>('[data-scene]').forEach((node) => revealObserver?.observe(node))
+    root
+      .querySelectorAll<HTMLElement>("[data-reveal]")
+      .forEach((node) => revealObserver?.observe(node));
+    root
+      .querySelectorAll<HTMLElement>("[data-scene]")
+      .forEach((node) => revealObserver?.observe(node));
   }
 
-  window.addEventListener('scroll', handleScrollEffects, { passive: true })
-  handleScrollEffects()
-})
+  window.addEventListener("scroll", handleScrollEffects, { passive: true });
+  handleScrollEffects();
+});
 
 onBeforeUnmount(() => {
-  revealObserver?.disconnect()
-  window.removeEventListener('scroll', handleScrollEffects)
-  cancelAnimationFrame(scrollRaf)
-})
+  revealObserver?.disconnect();
+  window.removeEventListener("scroll", handleScrollEffects);
+  cancelAnimationFrame(scrollRaf);
+});
 </script>
 
 <style scoped>
 .eu-page {
-  --font-display: 'Sora', 'Avenir Next', 'Segoe UI', sans-serif;
-  --font-body: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-display: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --hero-shift: 0px;
   --glow-shift: 0px;
-  --content-max: min(1100px, calc(100% - 3.2rem));
+  --content-max: min(1280px, calc(100% - 2.8rem));
   --radius-lg: 24px;
   --radius-md: 18px;
   --border-soft: 1px solid rgba(180, 204, 248, 0.2);
   --text-primary: #f4f8ff;
   --text-secondary: rgba(203, 220, 245, 0.9);
-  --section-gap: clamp(2rem, 5vw, 4rem);
+  --section-gap: clamp(5rem, 8vw, 7rem);
   font-family: var(--font-body);
   display: grid;
   gap: var(--section-gap);
   position: relative;
   isolation: isolate;
-  padding-bottom: clamp(4rem, 8vw, 6rem);
+  overflow-x: clip;
+  padding-bottom: clamp(6rem, 9vw, 8rem);
 }
 
 .eu-page::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(circle at 14% -8%, rgba(109, 145, 226, 0.24), rgba(109, 145, 226, 0) 38%),
-    radial-gradient(circle at 90% 74%, rgba(78, 110, 186, 0.14), rgba(78, 110, 186, 0) 46%),
+    radial-gradient(
+      circle at 14% -8%,
+      rgba(109, 145, 226, 0.24),
+      rgba(109, 145, 226, 0) 38%
+    ),
+    radial-gradient(
+      circle at 90% 74%,
+      rgba(78, 110, 186, 0.14),
+      rgba(78, 110, 186, 0) 46%
+    ),
     linear-gradient(165deg, rgba(4, 10, 22, 0.8), rgba(7, 14, 29, 0.4));
   opacity: 0;
   transition: opacity 900ms var(--motion-ease);
@@ -351,9 +417,10 @@ onBeforeUnmount(() => {
 
 .ambient {
   position: absolute;
-  inset: -10% -8% -8% -8%;
+  inset: 0;
   pointer-events: none;
   z-index: 1;
+  overflow: clip;
 }
 
 .glow {
@@ -369,7 +436,11 @@ onBeforeUnmount(() => {
   height: min(320px, 30vw);
   top: 2%;
   left: -12%;
-  background: radial-gradient(circle, rgba(116, 154, 237, 0.36), rgba(116, 154, 237, 0));
+  background: radial-gradient(
+    circle,
+    rgba(116, 154, 237, 0.36),
+    rgba(116, 154, 237, 0)
+  );
 }
 
 .glow-b {
@@ -377,7 +448,11 @@ onBeforeUnmount(() => {
   height: min(300px, 26vw);
   right: -8%;
   top: 42%;
-  background: radial-gradient(circle, rgba(83, 116, 196, 0.3), rgba(83, 116, 196, 0));
+  background: radial-gradient(
+    circle,
+    rgba(83, 116, 196, 0.3),
+    rgba(83, 116, 196, 0)
+  );
   animation-duration: 18s;
 }
 
@@ -393,6 +468,7 @@ onBeforeUnmount(() => {
 
 .content-shell {
   width: var(--content-max);
+  max-width: 100%;
   margin-inline: auto;
 }
 
@@ -413,7 +489,7 @@ onBeforeUnmount(() => {
 .hero {
   position: relative;
   width: var(--content-max);
-  max-width: 1120px;
+  max-width: 100%;
   margin-inline: auto;
   border-radius: var(--radius-lg);
   min-height: clamp(400px, 68vh, 640px);
@@ -440,8 +516,19 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(97deg, rgba(5, 12, 24, 0.9) 0%, rgba(5, 12, 24, 0.74) 36%, rgba(5, 12, 24, 0.32) 68%, rgba(5, 12, 24, 0.16) 100%),
-    linear-gradient(180deg, rgba(5, 12, 24, 0.16), rgba(5, 12, 24, 0.56));
+    linear-gradient(
+      97deg,
+      rgba(5, 12, 24, 0.84) 0%,
+      rgba(5, 12, 24, 0.52) 24%,
+      rgba(5, 12, 24, 0.18) 46%,
+      rgba(5, 12, 24, 0.06) 66%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 12, 24, 0.18),
+      rgba(5, 12, 24, 0.36) 56%,
+      rgba(5, 12, 24, 0.46) 100%
+    );
   z-index: 1;
 }
 
@@ -451,22 +538,32 @@ onBeforeUnmount(() => {
   top: -34%;
   width: 40%;
   height: 190%;
-  background: linear-gradient(110deg, rgba(220, 235, 255, 0), rgba(220, 235, 255, 0.08), rgba(220, 235, 255, 0));
+  background: linear-gradient(
+    110deg,
+    rgba(220, 235, 255, 0),
+    rgba(220, 235, 255, 0.08),
+    rgba(220, 235, 255, 0)
+  );
   transform: skewX(-18deg) translateX(calc(var(--glow-shift) * 0.8));
   filter: blur(5px);
   z-index: 2;
 }
 
 .hero-content {
-  position: relative;
+  position: absolute;
+  left: calc(clamp(2.8rem, 8vw, 7rem) + 180px);
+  right: auto;
+  top: calc(46% - 10px);
+  transform: translateY(-50%);
   z-index: 3;
-  height: 100%;
+  height: auto;
+  width: min(720px, calc(100% - 2.8rem));
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 0.72rem;
-  padding: clamp(1.6rem, 4vw, 3rem);
-  max-width: 760px;
+  padding: 0;
+  max-width: 100%;
 }
 
 .hero-kicker {
@@ -491,17 +588,18 @@ onBeforeUnmount(() => {
 
 .hero-subtitle {
   margin: 0;
-  max-width: 58ch;
-  line-height: 1.64;
-  color: rgba(217, 229, 249, 0.93);
-  font-size: clamp(0.92rem, 1.5vw, 1rem);
+  max-width: 50ch;
+  line-height: 1.66;
+  color: rgba(226, 236, 252, 0.95);
+  font-size: clamp(0.93rem, 1.45vw, 1rem);
+  text-shadow: 0 1px 8px rgba(2, 8, 18, 0.36);
 }
 
 .hero-actions {
-  margin-top: 0.44rem;
+  margin-top: 0.56rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.64rem;
+  gap: 0.84rem;
 }
 
 .btn {
@@ -523,25 +621,40 @@ onBeforeUnmount(() => {
 
 .btn-primary {
   color: #0b1932;
-  background: linear-gradient(130deg, #f8fbff 0%, #dde9ff 54%, #bed3ff 100%);
+  background: linear-gradient(130deg, #f9fcff 0%, #e3efff 52%, #c5d9ff 100%);
   border-color: rgba(223, 236, 255, 0.7);
   box-shadow:
-    0 12px 30px rgba(109, 146, 228, 0.34),
-    0 0 18px rgba(101, 143, 234, 0.2);
+    0 14px 32px rgba(109, 146, 228, 0.36),
+    0 0 22px rgba(101, 143, 234, 0.26);
 }
 
 .btn-secondary {
   color: #ecf4ff;
-  border-color: rgba(179, 204, 248, 0.4);
-  background: rgba(150, 175, 221, 0.14);
+  border-color: rgba(179, 204, 248, 0.34);
+  background: rgba(150, 175, 221, 0.08);
+  box-shadow: inset 0 1px 0 rgba(220, 234, 255, 0.08);
 }
 
 .btn:hover,
 .btn:focus-visible {
   transform: translateY(-2px);
   box-shadow:
-    0 14px 32px rgba(87, 127, 218, 0.36),
-    0 0 20px rgba(101, 143, 234, 0.25);
+    0 16px 34px rgba(87, 127, 218, 0.38),
+    0 0 24px rgba(101, 143, 234, 0.28);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  border-color: rgba(194, 217, 255, 0.44);
+  background: rgba(157, 183, 228, 0.14);
+}
+
+.hero-proof {
+  margin: 0.12rem 0 0;
+  color: rgba(205, 223, 251, 0.86);
+  font-size: 0.79rem;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
 }
 
 .metrics-section,
@@ -550,38 +663,51 @@ onBeforeUnmount(() => {
 .impact-section,
 .final-section {
   display: grid;
-  gap: clamp(1rem, 2vw, 1.4rem);
+  gap: clamp(1.3rem, 2.2vw, 1.8rem);
+}
+
+.metrics-section {
+  margin-top: clamp(0.7rem, 1.5vw, 1.2rem);
 }
 
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.metrics-grid :deep(.metric-card) {
+  height: 100%;
 }
 
 .timeline-section {
   position: relative;
-  padding-top: 0.2rem;
-  gap: clamp(1rem, 1.9vw, 1.3rem);
+  padding-top: 0.35rem;
+  gap: clamp(1.3rem, 2.2vw, 1.8rem);
 }
 
 .timeline-track {
   position: absolute;
-  left: 50%;
+  left: calc(50% - 0.5px);
   top: 146px;
   bottom: 12px;
   width: 1px;
-  transform: translateX(-50%);
+  transform: none;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(190, 215, 255, 0.62), rgba(99, 133, 209, 0.18));
+  background: linear-gradient(
+    180deg,
+    rgba(190, 215, 255, 0.62),
+    rgba(99, 133, 209, 0.18)
+  );
   box-shadow: 0 0 10px rgba(114, 154, 237, 0.24);
   pointer-events: none;
 }
 
 .timeline-list {
   display: grid;
-  gap: clamp(0.8rem, 1.7vw, 1.15rem);
-  margin-top: 0.15rem;
+  gap: clamp(1.6rem, 2.6vw, 2.2rem);
+  margin-top: 0.35rem;
 }
 
 .showcase-section {
@@ -601,7 +727,11 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-md);
   border: var(--border-soft);
   background:
-    radial-gradient(circle at 12% 12%, rgba(124, 160, 239, 0.18), rgba(124, 160, 239, 0) 44%),
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(124, 160, 239, 0.18),
+      rgba(124, 160, 239, 0) 44%
+    ),
     linear-gradient(162deg, rgba(16, 30, 55, 0.9), rgba(10, 22, 43, 0.92));
   box-shadow: 0 16px 32px rgba(4, 10, 22, 0.3);
   padding: clamp(1rem, 2.2vw, 1.5rem);
@@ -639,7 +769,7 @@ onBeforeUnmount(() => {
   border: var(--border-soft);
   width: 100%;
   max-width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   max-height: 550px;
   box-shadow:
     0 20px 44px rgba(4, 10, 22, 0.34),
@@ -662,8 +792,17 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(0deg, rgba(5, 11, 22, 0.9) 0%, rgba(5, 11, 22, 0.68) 34%, rgba(5, 11, 22, 0.18) 74%),
-    radial-gradient(circle at 84% 16%, rgba(210, 227, 255, 0.16), rgba(210, 227, 255, 0));
+    linear-gradient(
+      0deg,
+      rgba(5, 11, 22, 0.9) 0%,
+      rgba(5, 11, 22, 0.68) 34%,
+      rgba(5, 11, 22, 0.18) 74%
+    ),
+    radial-gradient(
+      circle at 84% 16%,
+      rgba(210, 227, 255, 0.16),
+      rgba(210, 227, 255, 0)
+    );
 }
 
 .showcase-caption {
@@ -718,7 +857,27 @@ onBeforeUnmount(() => {
 .impact-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 1rem;
+}
+
+.final-section {
+  margin-top: clamp(0.8rem, 1.8vw, 1.6rem);
+  width: min(960px, 100%);
+  margin-inline: auto;
+}
+
+.final-section :deep(.cta-shell) {
+  padding: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+.final-section :deep(.actions) {
+  margin-top: 0.42rem;
+  gap: 0.82rem;
+  align-items: center;
+}
+
+.final-section :deep(.desc) {
+  max-width: 56ch;
 }
 
 @keyframes floatGlow {
@@ -744,15 +903,9 @@ onBeforeUnmount(() => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .timeline-track {
-    left: 14px;
-    top: 138px;
-    transform: none;
-  }
-
   .showcase-split {
     grid-template-columns: 1fr;
-    gap: 0.9rem;
+    gap: 1rem;
   }
 
   .showcase-frame {
@@ -765,10 +918,18 @@ onBeforeUnmount(() => {
   }
 }
 
+@media (max-width: 980px) {
+  .timeline-track {
+    left: 14px;
+    top: 138px;
+    transform: none;
+  }
+}
+
 @media (max-width: 760px) {
   .eu-page {
-    --content-max: min(1100px, calc(100% - 1.4rem));
-    --section-gap: 1.6rem;
+    --content-max: min(1280px, calc(100% - 2rem));
+    --section-gap: clamp(3rem, 8vw, 4rem);
   }
 
   .hero {
@@ -776,7 +937,15 @@ onBeforeUnmount(() => {
   }
 
   .hero-content {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
     max-width: 100%;
+    padding-top: clamp(1.4rem, 6vh, 2rem);
+    padding-left: clamp(1.25rem, 4.2vw, 1.8rem);
   }
 
   .hero-title {
@@ -786,15 +955,25 @@ onBeforeUnmount(() => {
 
   .hero-actions {
     flex-direction: column;
+    gap: 0.68rem;
   }
 
   .btn {
     width: 100%;
   }
 
+  .hero-proof {
+    font-size: 0.76rem;
+  }
+
   .metrics-grid,
   .impact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .timeline-list {
+    gap: 1rem;
+    margin-top: 0.1rem;
   }
 }
 

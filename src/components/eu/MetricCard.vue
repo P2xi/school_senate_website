@@ -23,10 +23,11 @@ defineProps<{
   position: relative;
   display: grid;
   grid-template-columns: auto 1fr;
+  height: 100%;
   gap: 0.8rem;
   align-items: start;
   border-radius: 18px;
-  padding: 1rem;
+  padding: 1.02rem 1.02rem 0.96rem;
   border: 1px solid rgba(174, 198, 240, 0.2);
   background:
     radial-gradient(circle at 10% 10%, rgba(122, 158, 236, 0.18), rgba(122, 158, 236, 0) 48%),
@@ -69,8 +70,10 @@ defineProps<{
 .copy strong {
   margin: 0;
   color: #f6faff;
-  font-size: clamp(1.4rem, 2.1vw, 1.8rem);
-  line-height: 1;
+  font-size: clamp(1.58rem, 2.6vw, 2.05rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 10px rgba(105, 143, 227, 0.2);
 }
 
 .copy p {
@@ -82,7 +85,7 @@ defineProps<{
 
 .copy small {
   color: rgba(190, 206, 235, 0.86);
-  line-height: 1.5;
-  font-size: 0.78rem;
+  line-height: 1.44;
+  font-size: 0.75rem;
 }
 </style>
