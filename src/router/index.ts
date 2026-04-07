@@ -1,4 +1,4 @@
-﻿import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import MainPage from '@/views/MainPage.vue'
 import HakkimizdaPage from '@/views/HakkimizdaPage.vue'
@@ -10,7 +10,7 @@ import SporfestPage from '@/views/SporfestPage.vue'
 import AvrupaBirligiSimulasyonuPage from '@/views/AvrupaBirligiSimulasyonuPage.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
@@ -41,3 +41,4 @@ const router = createRouter({
 })
 
 export default router
+
