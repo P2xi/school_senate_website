@@ -716,13 +716,15 @@ onBeforeUnmount(() => {
 
 .showcase-split {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  align-items: center;
-  gap: clamp(0.9rem, 2vw, 1.6rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(1.6rem, 2.4vw, 2.1rem);
 }
 
 .showcase-copy {
   display: grid;
+  height: 100%;
+  align-content: center;
   gap: 0.68rem;
   border-radius: var(--radius-md);
   border: var(--border-soft);
@@ -862,7 +864,7 @@ onBeforeUnmount(() => {
 
 .final-section {
   margin-top: clamp(0.8rem, 1.8vw, 1.6rem);
-  width: min(960px, 100%);
+  width: 100%;
   margin-inline: auto;
 }
 

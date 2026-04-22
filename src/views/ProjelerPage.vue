@@ -34,7 +34,6 @@
         class="project-card reveal-item"
         data-reveal
         :style="{ '--reveal-delay': `${index * 85 + 90}ms` }"
-        :class="{ featured: project.title === 'Sportfest Organizasyon Program\u0131' }"
       >
         <header class="card-head">
           <span class="category-label">{{ project.category }}</span>
@@ -381,15 +380,6 @@ onBeforeUnmount(() => {
     0 0 30px rgba(73, 116, 216, 0.3);
 }
 
-.project-card.featured {
-  border-color: rgba(214, 228, 253, 0.66);
-  background: linear-gradient(170deg, rgba(38, 60, 97, 0.84), rgba(17, 33, 62, 0.92));
-  box-shadow:
-    0 20px 34px rgba(4, 10, 22, 0.3),
-    0 0 24px rgba(82, 127, 231, 0.24);
-  animation: surfaceBreatheActive 11s var(--motion-ease) infinite;
-}
-
 .card-head {
   display: flex;
   align-items: flex-start;
@@ -452,10 +442,6 @@ onBeforeUnmount(() => {
   line-height: 1.4;
   color: #f2f7ff;
   text-shadow: 0 1px 6px rgba(7, 14, 28, 0.34);
-}
-
-.project-card.featured h2 {
-  font-weight: 700;
 }
 
 .project-card p {

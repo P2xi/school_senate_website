@@ -6,7 +6,6 @@ import EkibimizPage from '@/views/EkibimizPage.vue'
 import ProjelerPage from '@/views/ProjelerPage.vue'
 import DuyurularPage from '@/views/DuyurularPage.vue'
 import IletisimPage from '@/views/IletisimPage.vue'
-import SporfestPage from '@/views/SporfestPage.vue'
 import AvrupaBirligiSimulasyonuPage from '@/views/AvrupaBirligiSimulasyonuPage.vue'
 
 const router = createRouter({
@@ -20,7 +19,6 @@ const router = createRouter({
         { path: 'hakkimizda', name: 'about', component: HakkimizdaPage },
         { path: 'ekibimiz', name: 'team', component: EkibimizPage },
         { path: 'projeler', name: 'projects', component: ProjelerPage },
-        { path: 'projeler/sporfest', name: 'sporfest', component: SporfestPage },
         {
           path: 'projeler/avrupa-birligi-simulasyonu',
           name: 'eu-simulation',

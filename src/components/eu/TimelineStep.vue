@@ -31,13 +31,12 @@ defineProps<{
 
 <style scoped>
 .timeline-step {
-  --step-card-min: clamp(270px, 30vw, 338px);
+  --step-card-height: clamp(320px, 34vw, 430px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(1.6rem, 2.4vw, 2.1rem);
-  align-items: start;
+  align-items: stretch;
   position: relative;
-  min-height: var(--step-card-min);
 }
 
 .timeline-step > * {
@@ -57,8 +56,8 @@ defineProps<{
   flex-direction: column;
   justify-content: space-between;
   gap: 0.82rem;
-  min-height: var(--step-card-min);
-  height: 100%;
+  min-height: var(--step-card-height);
+  height: var(--step-card-height);
   border-radius: 20px;
   border: 1px solid rgba(179, 204, 248, 0.24);
   background:
@@ -130,11 +129,10 @@ h3 {
 .media-wrap {
   margin: 0;
   position: relative;
-  min-height: var(--step-card-min);
-  height: 100%;
+  min-height: var(--step-card-height);
+  height: var(--step-card-height);
   border-radius: 20px;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
   border: 1px solid rgba(179, 204, 248, 0.24);
   box-shadow:
     0 20px 36px rgba(4, 10, 22, 0.32),
@@ -186,6 +184,16 @@ h3 {
   .timeline-step.reverse {
     grid-template-columns: 1fr;
     gap: 0.9rem;
+  }
+
+  .copy-wrap,
+  .media-wrap {
+    height: auto;
+    min-height: 280px;
+  }
+
+  .media-wrap {
+    aspect-ratio: 4 / 3;
   }
 
   .timeline-step.reverse .copy-wrap,

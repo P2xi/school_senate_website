@@ -13,15 +13,6 @@ export type ProjectContent = {
 
 export const projectsContent: ProjectContent[] = [
   {
-    title: 'Sportfest Organizasyon Programı',
-    status: 'Yakında',
-    category: 'Organizasyon',
-    homeDescription: 'Dört branşta takımların yarıştığı çok alanlı, okullar arası spor organizasyonu.',
-    projectsDescription:
-      'Farklı okulların dört branşta takımlar oluşturarak yarıştığı çok alanlı spor organizasyonu.',
-    detailTo: '/projeler/sporfest',
-  },
-  {
     title: 'Avrupa Birliği Simülasyonu Programı',
     status: 'Yakında',
     category: 'Organizasyon',
@@ -30,6 +21,16 @@ export const projectsContent: ProjectContent[] = [
     projectsDescription:
       'Avrupa Birliği kurumlarını modelleyen komitelerde, temsil ve karar süreçlerine odaklanan uygulamalı simülasyon programı.',
     detailTo: '/projeler/avrupa-birligi-simulasyonu',
+  },
+  {
+    title: 'E-Spor Turnuvası Etkinliği',
+    status: 'Yakında',
+    category: 'Organizasyon',
+    homeDescription:
+      'Takımların strateji, koordinasyon ve fair-play odağında yarıştığı çok okullu e-spor turnuvası.',
+    projectsDescription:
+      'Farklı okullardan takımların katıldığı, eleme ve final aşamalarından oluşan rekabetçi e-spor turnuvası etkinliği.',
+    detailTo: '/projeler?e-spor-turnuvasi',
   },
   {
     title: 'Senato Karar Takip Paneli',
