@@ -7,6 +7,8 @@ export const STORAGE_PATHS = {
   schoolLogo: 'logo/eskisehir-mba-senatosu.png',
 } as const
 
+const STORAGE_PROJECT_URL = 'https://aksbktcrzftimmjxluuj.supabase.co'
+
 const TEAM_PHOTO_TOKENS: Record<string, string> = {
   'Kultur ve Sanat Baskan Yardimcisi.jpeg': 'eyJraWQiOiI4YjQ3YjU3ZC0yMTAxLTQyOTAtOWJjNi0xMzc2OTRmZGVlOWIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJla2lwL0t1bHR1ciB2ZSBTYW5hdCBCYXNrYW4gWWFyZGltY2lzaS5qcGVnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc5MTI0MDU4NiwiZXhwIjoxODIyNzc2NTg2fQ.0nQuKC8QNBkH4QTLjQGZudg5ivEWftv_oD3KOu7PNNc',
   'Kultur ve Sanat Baskani.jpeg': 'eyJraWQiOiI4YjQ3YjU3ZC0yMTAxLTQyOTAtOWJjNi0xMzc2OTRmZGVlOWIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJla2lwL0t1bHR1ciB2ZSBTYW5hdCBCYXNrYW5pLmpwZWciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzkxMjQwNjA4LCJleHAiOjE4MjI3NzY2MDh9.35wgxWWQJ67mJDpnuyBuBroHYGLQvhOOz-msyMHwSsI',
@@ -25,9 +27,8 @@ const TEAM_PHOTO_TOKENS: Record<string, string> = {
 }
 
 export const getTeamPhotoUrl = (fileName: string) => {
-  const projectUrl = import.meta.env.VITE_SUPABASE_URL?.trim().replace(/\/$/, '')
   const token = TEAM_PHOTO_TOKENS[fileName]
-  if (!projectUrl || !token) return ''
+  if (!token) return ''
 
-  return `${projectUrl}/storage/v1/object/sign/${STORAGE_BUCKETS.team}/${encodeURIComponent(fileName)}?token=${token}`
+  return `${STORAGE_PROJECT_URL}/storage/v1/object/sign/${STORAGE_BUCKETS.team}/${encodeURIComponent(fileName)}?token=${token}`
 }

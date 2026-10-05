@@ -35,6 +35,7 @@
           <span class="member-photo-wrap">
             <span class="member-photo-fallback" aria-hidden="true">{{ getInitials(member.name) }}</span>
             <img
+              v-if="member.photo"
               class="member-photo"
               :src="member.photo"
               :alt="`${member.name} profil fotoğrafı`"
@@ -76,6 +77,7 @@
                 <span class="quickview-photo-wrap">
                   <span class="member-photo-fallback" aria-hidden="true">{{ getInitials(selectedMember.name) }}</span>
                   <img
+                    v-if="selectedMember.photo"
                     class="quickview-photo"
                     :src="selectedMember.photo"
                     :alt="`${selectedMember.name} profil fotoğrafı`"
