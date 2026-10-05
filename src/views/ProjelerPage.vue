@@ -69,12 +69,11 @@ let revealObserver: IntersectionObserver | null = null
 
 const headerStats = computed(() => [
   { value: projectsPortfolioMetric.display, label: 'Toplam Proje' },
-  { value: String(getProjectStatusCount('Yak\u0131nda')), label: 'Yak\u0131nda' },
+  { value: String(projectsContent.length), label: 'Listelenen Proje' },
   { value: String(getProjectStatusCount('Planlan\u0131yor')), label: 'Planlanan' },
 ])
 
 const getStatusClass = (status: ProjectStatus): string => {
-  if (status === 'Yak\u0131nda') return 'soon'
   if (status === 'Planlan\u0131yor') return 'planned'
   if (status === 'Devam Ediyor') return 'ongoing'
   return 'completed'
@@ -410,12 +409,6 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(180, 195, 220, 0.34);
   color: #d7e4ff;
   background: rgba(145, 165, 201, 0.22);
-}
-
-.status-badge.soon {
-  background: rgba(180, 163, 122, 0.16);
-  color: #f1e0b9;
-  border-color: rgba(210, 190, 140, 0.45);
 }
 
 .status-badge.planned {

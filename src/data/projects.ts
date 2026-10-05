@@ -1,4 +1,4 @@
-﻿export type ProjectStatus = 'Yakında' | 'Devam Ediyor' | 'Tamamlandı' | 'Planlanıyor'
+export type ProjectStatus = 'Devam Ediyor' | 'Tamamlandı' | 'Planlanıyor'
 
 export type ProjectCategory = 'Organizasyon' | 'Sosyal Sorumluluk' | 'Altyapı'
 
@@ -14,7 +14,7 @@ export type ProjectContent = {
 export const projectsContent: ProjectContent[] = [
   {
     title: 'Avrupa Birliği Simülasyonu Programı',
-    status: 'Yakında',
+    status: 'Planlanıyor',
     category: 'Organizasyon',
     homeDescription:
       'Öğrencilerin diplomasi, müzakere ve karar alma becerilerini geliştirdiği çok komiteli simülasyon programı.',
@@ -24,7 +24,7 @@ export const projectsContent: ProjectContent[] = [
   },
   {
     title: 'E-Spor Turnuvası Etkinliği',
-    status: 'Yakında',
+    status: 'Planlanıyor',
     category: 'Organizasyon',
     homeDescription:
       'Takımların strateji, koordinasyon ve fair-play odağında yarıştığı çok okullu e-spor turnuvası.',

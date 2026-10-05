@@ -1,20 +1,9 @@
-﻿<script setup lang="ts">
-import { onMounted, ref } from 'vue'
+<script setup lang="ts">
 import { RouterView } from 'vue-router'
-import LoadingEffect from '@/components/LoadingEffect.vue'
-
-const loading = ref(true)
-
-onMounted(() => {
-  setTimeout(() => {
-    loading.value = false
-  }, 1200)
-})
 </script>
 
 <template>
-  <LoadingEffect v-if="loading" />
-  <RouterView v-else />
+  <RouterView />
 </template>
 
 <style>
@@ -33,9 +22,13 @@ body {
   font-family: 'Aptos', 'Segoe UI', 'Trebuchet MS', Arial, sans-serif;
   background: #070f1f;
   color: #edf2ff;
-  text-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
 }
 
 a,

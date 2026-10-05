@@ -32,6 +32,20 @@
         <span class="card-sheen" aria-hidden="true" />
         <header class="card-header">
           <span class="card-accent" aria-hidden="true" />
+          <span class="member-photo-wrap">
+            <span class="member-photo-fallback" aria-hidden="true">{{ getInitials(member.name) }}</span>
+            <img
+              class="member-photo"
+              :src="member.photo"
+              :alt="`${member.name} profil fotoğrafı`"
+              width="96"
+              height="96"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              @error="hideBrokenImage"
+            />
+          </span>
           <div class="card-meta">
             <h2>{{ member.name }}</h2>
             <span class="role-badge">{{ member.role }}</span>
@@ -59,6 +73,18 @@
             <button class="quickview-close" type="button" aria-label="Kapat" @click="closeProfileQuickView">×</button>
             <template v-if="selectedMember">
               <header class="quickview-head">
+                <span class="quickview-photo-wrap">
+                  <span class="member-photo-fallback" aria-hidden="true">{{ getInitials(selectedMember.name) }}</span>
+                  <img
+                    class="quickview-photo"
+                    :src="selectedMember.photo"
+                    :alt="`${selectedMember.name} profil fotoğrafı`"
+                    width="128"
+                    height="128"
+                    decoding="async"
+                    @error="hideBrokenImage"
+                  />
+                </span>
                 <p class="quickview-kicker">Ekip Profili</p>
                 <h2>{{ selectedMember.name }}</h2>
                 <span class="quickview-role">{{ selectedMember.role }}</span>
@@ -89,10 +115,12 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { getTeamPhotoUrl } from '@/lib/storagePaths'
 
 type Member = {
   name: string
   role: string
+  photo: string
   bio: string
   responsibilities: string[]
 }
@@ -101,74 +129,100 @@ const members: Member[] = [
   {
     name: 'Ozan Biçici',
     role: 'Senato Başkanı',
-    bio: 'Senato gündeminin genel koordinasyonunu yürütür. Okul yönetimi ve öğrenci temsil mekanizmaları arasında köprü kurar.',
-    responsibilities: ['Toplantı gündemi ve karar süreçleri', 'Komisyonlar arası stratejik koordinasyon'],
+    photo: getTeamPhotoUrl('Senato Baskani.jpeg'),
+    bio: 'Senato çalışmalarının genel koordinasyonunu yürütür. Ekipler arasındaki iş birliğini ve temsil süreçlerini yönetir.',
+    responsibilities: ['Senato gündemi ve karar süreçleri', 'Başkanlıklar arası stratejik koordinasyon'],
   },
   {
-    name: 'Ravza Tuğçe Yılmaz',
-    role: 'Senato Başkanı',
-    bio: 'Temsil süreçlerinde düzen ve sürdürülebilirlik odaklı çalışır. Katılımcı kültürü güçlendiren aksiyon planları oluşturur.',
-    responsibilities: ['Temsil standartlarının takibi', 'Kurumsal iletişim planlaması'],
-  },
-  {
-    name: 'Ekin Öndeş',
-    role: 'Başkan Yardımcısı',
-    bio: 'Başkanlık gündemlerini operasyonel seviyede takip eder. Ekiplerin uygulama hızını artıran koordinasyon noktalarını yönetir.',
-    responsibilities: ['Uygulama takibi ve raporlama', 'Ekipler arası görev akışı'],
+    name: 'Derin Delikkulak',
+    role: 'Senato Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Senato Baskan Yardimcisi.jpeg'),
+    bio: 'Senato başkanına yönetim ve koordinasyon süreçlerinde destek olur. Alınan kararların ekipler arasında uygulanmasını takip eder.',
+    responsibilities: ['Kararların uygulama takibi', 'Ekipler arası görev ve iletişim akışı'],
   },
   {
     name: 'Arda Eşdoğan',
     role: 'Teknoloji Başkanı',
+    photo: getTeamPhotoUrl('Teknoloji Baskani.jpeg'),
     bio: 'Dijital altyapı ve ürünleşen öğrenci çözümleri üzerinde çalışır. Süreçlerin ölçülebilir ve izlenebilir olmasını sağlar.',
     responsibilities: ['Teknoloji planı ve araç seçimi', 'Dijital süreç otomasyonu'],
   },
   {
-    name: 'Furkan Doruk İnci',
-    role: 'Teknoloji Başkanı',
-    bio: 'Teknik uygulamaların sürdürülebilirliğini ve performansını takip eder. Ekip içi teknik iş birliğini güçlendirir.',
-    responsibilities: ['Teknik kalite ve bakım', 'Ürün iyileştirme döngüsü'],
-  },
-  {
-    name: 'Zeynep Nur Sofuoğlu',
-    role: 'CIP Başkanı',
-    bio: 'CIP süreçlerinde planlama, dokümantasyon ve çıktı takibini yürütür. Kurumsal standartlara uyumu önceleyen bir çerçeve kurar.',
-    responsibilities: ['CIP takvim ve çıktı yönetimi', 'Standart ve kalite kontrolü'],
-  },
-  {
-    name: 'Çağtay Öncel',
-    role: 'CIP Başkanı',
-    bio: 'Süreç iyileştirme odaklı CIP projelerini yönetir. Ekiplerin hedef bazlı ilerlemesini destekler.',
-    responsibilities: ['Süreç iyileştirme aksiyonları', 'Performans odaklı takip'],
-  },
-  {
-    name: 'Rüya Yırtıcı',
-    role: 'Kulüpler Başkanı',
-    bio: 'Kulüp ekosisteminin görünürlüğünü ve etkinliğini artırır. Kulüpler arası ortak üretim kültürünü teşvik eder.',
-    responsibilities: ['Kulüp koordinasyon toplantıları', 'Etkinlik takvimi eşleştirmesi'],
-  },
-  {
-    name: 'Yiğit Vural',
-    role: 'Kulüpler Başkanı',
-    bio: 'Kulüplerin proje çıktılarının sürdürülebilirliğine odaklanır. Operasyonel ihtiyaçları hızlıca senato gündemine taşır.',
-    responsibilities: ['Kulüp ihtiyaç ve kaynak takibi', 'Etkinlik operasyon desteği'],
-  },
-  {
-    name: 'Zarife Sedef Tümkaya',
+    name: 'Hasan Suat Tezcan',
     role: 'Medya İletişim Başkanı',
-    bio: 'Senato çalışmalarının doğru ve etkili şekilde duyurulmasını sağlar. İçerik dilinde tutarlılık ve görünürlük önceliklidir.',
-    responsibilities: ['İçerik stratejisi ve yayın planı', 'Kurum içi iletişim akışı'],
+    photo: getTeamPhotoUrl('Medya Iletisim Baskani.jpeg'),
+    bio: 'Senato çalışmalarının doğru, tutarlı ve etkili biçimde duyurulmasını sağlar. Kurumsal iletişim dilini ve yayın süreçlerini yönetir.',
+    responsibilities: ['İçerik stratejisi ve yayın planı', 'Kurumsal iletişim koordinasyonu'],
   },
   {
-    name: 'Duru Naz Ulusoy',
-    role: 'Medya İletişim Başkanı',
-    bio: 'İletişim içeriklerinin üretim ve dağıtım süreçlerini yönetir. Marka dili ve mesaj bütünlüğünü korur.',
-    responsibilities: ['İçerik üretim koordinasyonu', 'Mesaj bütünlüğü kontrolü'],
+    name: 'Mustafa Yağız Görgün',
+    role: 'Proje Strateji Başkanı',
+    photo: getTeamPhotoUrl('Proje Strateji Baskani.jpeg'),
+    bio: 'Senato projelerinin hedef, kapsam ve uygulama stratejilerini oluşturur. Ekiplerin ortak hedefler doğrultusunda ilerlemesini destekler.',
+    responsibilities: ['Proje stratejisi ve yol haritası', 'Hedef ve çıktı takibi'],
   },
   {
-    name: 'Sezer Fener',
+    name: 'Ela Tunga',
+    role: 'Kültür ve Sanat Başkanı',
+    photo: getTeamPhotoUrl('Kultur ve Sanat Baskani.jpeg'),
+    bio: 'Kültür ve sanat alanındaki etkinlikleri planlar. Öğrencilerin yaratıcı üretimlerini görünür kılan çalışmalar geliştirir.',
+    responsibilities: ['Kültür ve sanat etkinlikleri', 'Yaratıcı proje koordinasyonu'],
+  },
+  {
+    name: 'Tuana Yıldırım',
     role: 'Mali İşler Başkanı',
+    photo: getTeamPhotoUrl('Mali Isler Baskani.jpeg'),
     bio: 'Bütçe planlaması ve kaynak kullanımında şeffaflık odaklı çalışır. Proje maliyetlerini sürdürülebilir bir yapıda yönetir.',
     responsibilities: ['Bütçe planı ve raporlama', 'Kaynak verimliliği takibi'],
+  },
+  {
+    name: 'Elif Sultan Gül',
+    role: 'Sosyal Girişim Başkanı',
+    photo: getTeamPhotoUrl('Sosyal Girisim Baskani.jpeg'),
+    bio: 'Toplumsal fayda üreten girişimleri planlar ve koordine eder. Öğrencilerin sosyal etki odaklı projelere katılımını güçlendirir.',
+    responsibilities: ['Sosyal girişim projeleri', 'Toplumsal etki ve iş birliği'],
+  },
+  {
+    name: 'Ada Rastgeldi',
+    role: 'Teknoloji Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Teknoloji Baskan Yardimcisi.jpeg'),
+    bio: 'Teknoloji çalışmalarının uygulama ve takip süreçlerine destek verir. Dijital projelerin düzenli ilerlemesine katkı sağlar.',
+    responsibilities: ['Teknik uygulama desteği', 'Dijital proje takibi'],
+  },
+  {
+    name: 'Nehir Aydoğan',
+    role: 'Medya İletişim Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Medya Iletisim Baskan Yardimcisi.jpeg'),
+    bio: 'İletişim içeriklerinin hazırlanması ve yayınlanması süreçlerine destek olur. Senato çalışmalarının görünürlüğünü güçlendirir.',
+    responsibilities: ['İçerik üretim desteği', 'Yayın ve iletişim takibi'],
+  },
+  {
+    name: 'Yağmur Çelik',
+    role: 'Medya İletişim Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Medya Iletisim Baskan Yardimcisi 2.jpeg'),
+    bio: 'Medya ve iletişim çalışmalarının üretim sürecine katkı sağlar. Mesaj bütünlüğünün ve yayın düzeninin korunmasını destekler.',
+    responsibilities: ['Medya içerik koordinasyonu', 'Yayın düzeni ve mesaj kontrolü'],
+  },
+  {
+    name: 'Ebru Hazal Gül',
+    role: 'Kültür ve Sanat Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Kultur ve Sanat Baskan Yardimcisi.jpeg'),
+    bio: 'Kültür ve sanat projelerinin hazırlık ve uygulama aşamalarına destek verir. Etkinliklerin düzenli ilerlemesine katkı sağlar.',
+    responsibilities: ['Etkinlik hazırlık süreçleri', 'Kültür ve sanat proje desteği'],
+  },
+  {
+    name: 'Öykü Taş',
+    role: 'Mali İşler Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Mali Isler Baskan Yardimcisi.jpeg'),
+    bio: 'Mali süreçlerin kayıt, takip ve raporlama çalışmalarına destek olur. Kaynakların planlı kullanımına katkı sağlar.',
+    responsibilities: ['Mali kayıt ve takip', 'Bütçe raporlama desteği'],
+  },
+  {
+    name: 'Ecrin Ural',
+    role: 'Sosyal Girişim Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Sosyal Girisim Baskan Yardimcisi.jpeg'),
+    bio: 'Sosyal girişim projelerinin planlama ve uygulama süreçlerine destek verir. Toplumsal fayda odaklı çalışmalara katkı sağlar.',
+    responsibilities: ['Sosyal proje uygulama desteği', 'Etki ve katılım takibi'],
   },
 ]
 
@@ -177,6 +231,18 @@ const modalOpen = ref(false)
 const selectedMember = ref<Member | null>(null)
 const selectedIndex = ref<number>(-1)
 let revealObserver: IntersectionObserver | null = null
+
+const getInitials = (name: string) => name
+  .split(/\s+/)
+  .slice(0, 2)
+  .map((part) => part[0])
+  .join('')
+  .toLocaleUpperCase('tr-TR')
+
+const hideBrokenImage = (event: Event) => {
+  const image = event.currentTarget as HTMLImageElement | null
+  if (image) image.hidden = true
+}
 
 const handleCardPointerMove = (event: PointerEvent) => {
   const card = event.currentTarget as HTMLElement | null
@@ -451,7 +517,7 @@ onBeforeUnmount(() => {
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 0.98rem;
   position: relative;
   padding: 1.1rem;
@@ -492,6 +558,7 @@ onBeforeUnmount(() => {
 }
 
 .team-card {
+  grid-column: span 3;
   border: 1px solid rgba(174, 196, 236, 0.28);
   border-radius: 18px;
   padding: 1.16rem;
@@ -500,7 +567,7 @@ onBeforeUnmount(() => {
     linear-gradient(174deg, rgba(28, 47, 80, 0.78), rgba(12, 23, 47, 0.9));
   display: grid;
   gap: 1rem;
-  min-height: 168px;
+  min-height: 240px;
   position: relative;
   overflow: hidden;
   transition:
@@ -510,7 +577,17 @@ onBeforeUnmount(() => {
     background-color 0.26s var(--motion-ease),
     opacity 0.26s var(--motion-ease),
     filter 0.26s var(--motion-ease);
-  animation: cardBreathe 11s var(--motion-ease) infinite;
+  /* Çok sayıdaki kartta sürekli gölge animasyonu yerine GPU-dostu hover geçişi kullanılır. */
+  animation: none;
+}
+
+/* On dört kişilik kadronun son iki kartını masaüstünde dengeli ortalar. */
+.team-card:nth-child(13) {
+  grid-column: 4 / span 3;
+}
+
+.team-card:nth-child(14) {
+  grid-column: 7 / span 3;
 }
 
 .team-card::before {
@@ -563,7 +640,7 @@ onBeforeUnmount(() => {
   background: linear-gradient(90deg, transparent, rgba(228, 238, 255, 0.14), transparent);
   transform: skewX(-18deg);
   opacity: 0.52;
-  animation: cardSweep 9s linear infinite;
+  display: none;
 }
 
 .team-card:hover {
@@ -615,6 +692,8 @@ onBeforeUnmount(() => {
 
 .card-header {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
   align-items: flex-start;
   gap: 0.8rem;
   position: relative;
@@ -622,6 +701,7 @@ onBeforeUnmount(() => {
 }
 
 .card-accent {
+  justify-self: center;
   width: 72px;
   height: 3px;
   border-radius: 999px;
@@ -632,6 +712,42 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
+.member-photo-wrap,
+.quickview-photo-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(198, 217, 251, 0.4);
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(78, 108, 166, 0.9), rgba(25, 46, 82, 0.96));
+  box-shadow: 0 8px 20px rgba(3, 9, 21, 0.3), 0 0 18px rgba(96, 137, 224, 0.18);
+}
+
+.member-photo-wrap {
+  width: 96px;
+  height: 96px;
+}
+
+.member-photo-fallback {
+  color: #e9f2ff;
+  font-size: 1rem;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+}
+
+.member-photo,
+.quickview-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
 .card-accent::after {
   content: '';
   position: absolute;
@@ -640,7 +756,7 @@ onBeforeUnmount(() => {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.78), transparent);
   transform: skewX(-16deg);
   opacity: 0.6;
-  animation: accentShimmer 6.8s linear infinite;
+  display: none;
 }
 
 .team-card:hover .card-accent {
@@ -651,7 +767,9 @@ onBeforeUnmount(() => {
 .card-meta {
   min-width: 0;
   display: grid;
+  justify-items: center;
   gap: 0.68rem;
+  text-align: center;
 }
 
 .card-meta h2 {
@@ -671,6 +789,7 @@ onBeforeUnmount(() => {
   width: fit-content;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 24px;
   padding: 0 0.6rem;
   border-radius: 999px;
@@ -680,7 +799,11 @@ onBeforeUnmount(() => {
   font-size: 0.72rem;
   line-height: 1;
   font-weight: 590;
-  white-space: nowrap;
+  max-width: 100%;
+  padding-block: 0.36rem;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
   transition:
     transform 0.24s var(--motion-ease),
     box-shadow 0.24s var(--motion-ease),
@@ -699,6 +822,7 @@ onBeforeUnmount(() => {
 
 .card-hint {
   margin-top: auto;
+  justify-self: center;
   width: fit-content;
   color: rgba(188, 204, 230, 0.66);
   font-size: 0.8rem;
@@ -812,9 +936,21 @@ onBeforeUnmount(() => {
 
 .quickview-head {
   display: grid;
+  justify-items: center;
+  text-align: center;
   gap: 0.72rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(176, 197, 236, 0.22);
+}
+
+.quickview-photo-wrap {
+  width: 128px;
+  height: 128px;
+  margin-bottom: 0.2rem;
+}
+
+.quickview-photo-wrap .member-photo-fallback {
+  font-size: 1.4rem;
 }
 
 .quickview-kicker {
@@ -853,6 +989,7 @@ onBeforeUnmount(() => {
 
 .quickview-bio {
   margin: 0.08rem 0 0;
+  max-width: 62ch;
   color: rgba(211, 224, 247, 0.94);
   line-height: 1.78;
 }
@@ -1034,7 +1171,19 @@ onBeforeUnmount(() => {
 
 @media (max-width: 1080px) {
   .team-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .team-card {
+    grid-column: span 4;
+  }
+
+  .team-card:nth-child(13) {
+    grid-column: 3 / span 4;
+  }
+
+  .team-card:nth-child(14) {
+    grid-column: 7 / span 4;
   }
 
   .team-grid .team-card:nth-child(-n + 4) {
@@ -1069,7 +1218,13 @@ onBeforeUnmount(() => {
 
 @media (max-width: 760px) {
   .team-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .team-card,
+  .team-card:nth-child(13),
+  .team-card:nth-child(14) {
+    grid-column: span 6;
   }
 
   .team-grid .team-card:nth-child(-n + 3) {
@@ -1108,6 +1263,7 @@ onBeforeUnmount(() => {
   }
 
   .team-card {
+    grid-column: 1 / -1 !important;
     min-height: 154px;
     border-color: rgba(170, 196, 241, 0.36) !important;
     background:

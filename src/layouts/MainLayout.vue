@@ -25,21 +25,15 @@
         </button>
 
         <ul id="main-menu" class="menu-list" :class="{ 'is-open': isMobileMenuOpen }">
-          <li class="cta-menu-item">
-            <RouterLink
-              class="menu-link menu-link-cta featured-capsule"
-              :to="featuredProjectLink"
-              :class="{ 'is-active': isFeaturedProjectActive }"
-              @click="closeMobileMenu"
-            >
-              <span class="featured-kicker">Öne Çıkan</span>
-              <span class="featured-title">EuroEsMba26</span>
-            </RouterLink>
-          </li>
-          <li class="menu-divider" aria-hidden="true" />
           <li v-for="item in menuItems" :key="item.to">
             <RouterLink class="menu-link" :to="item.to" exact-active-class="is-active" @click="closeMobileMenu">
               {{ item.label }}
+            </RouterLink>
+          </li>
+          <li class="account-menu-item">
+            <RouterLink class="account-link" to="/uyelik" active-class="is-active" @click="closeMobileMenu">
+              <span class="account-dot" :class="{ online: Boolean(user) }" aria-hidden="true" />
+              {{ user ? shortDisplayName : 'Üye Girişi' }}
             </RouterLink>
           </li>
         </ul>
@@ -114,8 +108,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { SCHOOL_LOGO_URL } from '@/lib/brand'
-
-const featuredProjectLink = '/projeler/avrupa-birligi-simulasyonu'
+import { useAuth } from '@/composables/useAuth'
 
 const menuItems = [
   { label: 'Ana Sayfa', to: '/' },
@@ -127,25 +120,35 @@ const menuItems = [
 ]
 
 const route = useRoute()
+const { user, displayName } = useAuth()
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
-const isFeaturedProjectActive = computed(() => route.path.startsWith(featuredProjectLink))
+const shortDisplayName = computed(() => displayName.value.split(/\s+/)[0] || 'Hesabım')
+let scrollFrame = 0
 
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 
+const updateScrollState = () => {
+  const nextValue = window.scrollY > 16
+  if (isScrolled.value !== nextValue) isScrolled.value = nextValue
+  scrollFrame = 0
+}
+
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 16
+  if (scrollFrame) return
+  scrollFrame = requestAnimationFrame(updateScrollState)
 }
 
 onMounted(() => {
-  handleScroll()
+  updateScrollState()
   window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
+  cancelAnimationFrame(scrollFrame)
 })
 
 watch(
@@ -191,7 +194,7 @@ watch(
     linear-gradient(160deg, #081329 0%, #0a162b 38%, #0d1a31 68%, #0b172d 100%);
   color: var(--text-primary);
   position: relative;
-  animation: globalAmbientShift 24s var(--sys-ease) infinite alternate;
+  animation: none;
 }
 
 .shell-grain {
@@ -220,7 +223,7 @@ watch(
   left: -14%;
   top: -6%;
   background: radial-gradient(circle, rgba(96, 137, 229, 0.22), rgba(96, 137, 229, 0));
-  animation: globalLightDrift 22s var(--sys-ease) infinite alternate;
+  animation: none;
 }
 
 .app-shell::after {
@@ -229,7 +232,7 @@ watch(
   right: -9%;
   bottom: 4%;
   background: radial-gradient(circle, rgba(52, 71, 132, 0.1), rgba(52, 71, 132, 0));
-  animation: globalLightDrift 28s var(--sys-ease) infinite alternate-reverse;
+  animation: none;
 }
 
 .navbar-wrap {
@@ -349,11 +352,43 @@ watch(
   gap: 0.35rem;
 }
 
-.menu-divider {
-  width: 1px;
-  height: 46%;
-  align-self: center;
-  background: rgba(255, 255, 255, 0.1);
+.account-link {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid rgba(177, 199, 238, 0.26);
+  border-radius: 999px;
+  color: #eaf1ff;
+  background: rgba(158, 184, 230, 0.09);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 650;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-link:hover,
+.account-link:focus-visible,
+.account-link.is-active {
+  border-color: rgba(198, 217, 249, 0.48);
+  background: rgba(174, 198, 239, 0.16);
+  box-shadow: 0 0 16px rgba(96, 137, 224, 0.18);
+  outline: none;
+}
+
+.account-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #91a4c8;
+  box-shadow: 0 0 8px rgba(145, 164, 200, 0.35);
+}
+
+.account-dot.online {
+  background: #75dfa5;
+  box-shadow: 0 0 9px rgba(117, 223, 165, 0.55);
 }
 
 .menu-link {
@@ -373,63 +408,6 @@ watch(
     background-color 0.22s ease,
     box-shadow 0.22s ease,
     transform 0.22s ease;
-}
-
-.menu-link-cta {
-  color: var(--text-primary);
-  font-weight: 630;
-  border: 1px solid rgba(188, 209, 246, 0.26);
-  background:
-    radial-gradient(circle at 86% -24%, rgba(155, 186, 248, 0.26), rgba(155, 186, 248, 0) 54%),
-    linear-gradient(168deg, rgba(31, 49, 80, 0.9), rgba(18, 32, 58, 0.92));
-  backdrop-filter: blur(9px);
-  box-shadow:
-    inset 0 1px 0 rgba(230, 240, 255, 0.1),
-    0 6px 16px rgba(7, 14, 30, 0.26),
-    0 0 12px rgba(102, 140, 220, 0.14);
-}
-
-.menu-link-cta::after {
-  display: none;
-}
-
-.featured-capsule {
-  min-height: 50px;
-  min-width: 174px;
-  padding: 0.5rem 1.2rem 0.56rem 1rem;
-  border-radius: 13px;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  column-gap: 0.52rem;
-  text-align: left;
-  line-height: 1.08;
-}
-
-.featured-capsule::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #dbe9ff 0%, #9ebdff 58%, #6a93e4 100%);
-  align-self: center;
-  grid-row: 1 / span 2;
-  box-shadow: 0 0 10px rgba(126, 165, 240, 0.5);
-}
-
-.featured-kicker {
-  font-size: 0.54rem;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: rgba(201, 218, 246, 0.76);
-  font-weight: 600;
-}
-
-.featured-title {
-  font-size: 0.87rem;
-  letter-spacing: 0.015em;
-  color: #f2f7ff;
-  font-weight: 680;
 }
 
 .menu-link::after {
@@ -457,41 +435,6 @@ watch(
   outline: none;
 }
 
-.menu-link-cta:hover,
-.menu-link-cta:focus-visible,
-.menu-link-cta.is-active {
-  color: #f4f8ff;
-  border-color: rgba(205, 224, 252, 0.48);
-  background:
-    radial-gradient(circle at 86% -24%, rgba(172, 203, 255, 0.34), rgba(172, 203, 255, 0) 54%),
-    linear-gradient(168deg, rgba(36, 56, 90, 0.92), rgba(20, 36, 65, 0.94));
-  box-shadow:
-    inset 0 1px 0 rgba(238, 246, 255, 0.18),
-    0 9px 19px rgba(7, 15, 32, 0.34),
-    0 0 16px rgba(103, 140, 220, 0.22);
-  filter: brightness(1.06);
-  transform: translateY(-1px);
-}
-
-.menu-link-cta:active {
-  transform: translateY(0) scale(0.992);
-}
-
-.menu-link-cta.is-active {
-  border-color: rgba(216, 231, 255, 0.56);
-  background:
-    radial-gradient(circle at 86% -24%, rgba(182, 212, 255, 0.36), rgba(182, 212, 255, 0) 54%),
-    linear-gradient(168deg, rgba(39, 60, 98, 0.94), rgba(22, 39, 70, 0.96));
-  box-shadow:
-    inset 0 1px 0 rgba(243, 249, 255, 0.24),
-    0 12px 24px rgba(6, 14, 30, 0.44),
-    0 0 22px rgba(111, 149, 231, 0.34);
-}
-
-.menu-link-cta.is-active .featured-kicker {
-  color: rgba(223, 234, 252, 0.88);
-}
-
 .menu-link:hover::after,
 .menu-link:focus-visible::after,
 .menu-link.is-active::after {
@@ -513,6 +456,11 @@ watch(
   z-index: 1;
 }
 
+.main-content :deep(section) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
+}
+
 .main-content::before,
 .main-content::after {
   content: '';
@@ -529,7 +477,7 @@ watch(
   left: -10%;
   top: -6%;
   background: radial-gradient(circle, rgba(98, 140, 232, 0.16), rgba(98, 140, 232, 0));
-  animation: globalLightDrift 18s var(--sys-ease) infinite alternate;
+  animation: none;
 }
 
 .main-content::after {
@@ -538,7 +486,7 @@ watch(
   right: -8%;
   bottom: 0;
   background: radial-gradient(circle, rgba(60, 88, 164, 0.08), rgba(60, 88, 164, 0));
-  animation: globalLightDrift 24s var(--sys-ease) infinite alternate-reverse;
+  animation: none;
 }
 
 .footer {
@@ -669,7 +617,15 @@ watch(
   border-radius: 50%;
   filter: blur(70px) !important;
   opacity: 0.16 !important;
-  animation: systemAmbientFloat 22s var(--sys-ease) infinite alternate !important;
+  animation: none !important;
+}
+
+:deep(.page-hero),
+:deep(.page-hero)::before,
+:deep(.hero-streak),
+:deep(.team-grid)::before,
+:deep(.projects-grid)::before {
+  animation: none !important;
 }
 
 :deep(.blob-a) {
@@ -947,7 +903,7 @@ watch(
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1120px) {
   .navbar,
   .main-content,
   .footer {
@@ -985,13 +941,6 @@ watch(
     box-shadow: var(--shadow-soft);
   }
 
-  .menu-divider {
-    width: 100%;
-    height: 1px;
-    margin: 0.1rem 0 0.3rem;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
   .menu-list.is-open {
     display: grid;
   }
@@ -1003,30 +952,12 @@ watch(
     border-radius: 8px;
   }
 
-  .cta-menu-item .menu-link-cta {
+  .account-link {
     width: 100%;
-    min-height: 58px;
-    margin-bottom: 0.18rem;
-    padding: 0.58rem 0.92rem 0.62rem 0.92rem;
-    border-radius: 12px;
-    border-color: rgba(194, 213, 246, 0.34);
-    box-shadow:
-      inset 0 1px 0 rgba(233, 242, 255, 0.16),
-      0 8px 18px rgba(6, 12, 26, 0.36),
-      0 0 16px rgba(103, 140, 220, 0.2);
-  }
-
-  .cta-menu-item .featured-capsule {
-    min-width: 0;
-    grid-template-columns: auto 1fr;
-  }
-
-  .cta-menu-item .featured-kicker {
-    font-size: 0.57rem;
-  }
-
-  .cta-menu-item .featured-title {
-    font-size: 0.9rem;
+    min-height: 44px;
+    justify-content: flex-start;
+    border-radius: 9px;
+    padding-inline: 0.75rem;
   }
 
   .brand-top {

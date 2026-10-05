@@ -32,7 +32,12 @@
       </div>
 
       <figure class="hero-media">
-        <img :src="image1" alt="Eskişehir MBA Senatosu Avrupa Birliği simülasyonu sertifika töreni" />
+        <img
+          :src="image1"
+          alt="Eskişehir MBA Senatosu Avrupa Birliği simülasyonu sertifika töreni"
+          fetchpriority="high"
+          decoding="async"
+        />
         <div class="hero-media-overlay" aria-hidden="true" />
         <figcaption>Avrupa Birliği Simülasyonu – Sertifikalı Uluslararası Temsil Deneyimi</figcaption>
       </figure>
@@ -74,7 +79,6 @@
           :status="project.status"
           :action-label="project.actionLabel"
           :action-to="project.actionTo"
-          :featured="project.featured"
         />
       </div>
     </section>
@@ -97,7 +101,7 @@
           :style="{ '--reveal-delay': `${index * 130}ms` }"
           :class="{ 'is-featured': item.featured }"
         >
-          <img :src="item.src" :alt="item.alt" />
+          <img :src="item.src" :alt="item.alt" loading="lazy" decoding="async" fetchpriority="low" />
           <div class="gallery-overlay">
             <p>{{ item.caption }}</p>
             <span>{{ item.note }}</span>
@@ -150,7 +154,6 @@ type Project = {
   status: ProjectStatus
   actionLabel: string
   actionTo: string
-  featured?: boolean
 }
 
 type GalleryItem = {
@@ -246,10 +249,8 @@ const landingRef = ref<HTMLElement | null>(null)
 const heroRef = ref<HTMLElement | null>(null)
 let revealObserver: IntersectionObserver | null = null
 let parallaxRaf = 0
-let scrollRaf = 0
 let lastOffsetX = 0
 let lastOffsetY = 0
-let scrollShift = 0
 
 const updateHeroParallax = () => {
   if (!heroRef.value) return
@@ -273,18 +274,6 @@ const handleHeroPointerLeave = () => {
   lastOffsetY = 0
   cancelAnimationFrame(parallaxRaf)
   parallaxRaf = requestAnimationFrame(updateHeroParallax)
-}
-
-const updateScrollParallax = () => {
-  if (!landingRef.value) return
-  landingRef.value.style.setProperty('--scroll-shift', `${scrollShift}px`)
-}
-
-const handleScrollParallax = () => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  scrollShift = Math.max(-14, Math.min(14, window.scrollY * 0.02))
-  cancelAnimationFrame(scrollRaf)
-  scrollRaf = requestAnimationFrame(updateScrollParallax)
 }
 
 onMounted(async () => {
@@ -343,22 +332,18 @@ onMounted(async () => {
 
   heroRef.value?.addEventListener('pointermove', handleHeroPointerMove, { passive: true })
   heroRef.value?.addEventListener('pointerleave', handleHeroPointerLeave, { passive: true })
-  window.addEventListener('scroll', handleScrollParallax, { passive: true })
 })
 
 onBeforeUnmount(() => {
   revealObserver?.disconnect()
   heroRef.value?.removeEventListener('pointermove', handleHeroPointerMove)
   heroRef.value?.removeEventListener('pointerleave', handleHeroPointerLeave)
-  window.removeEventListener('scroll', handleScrollParallax)
   cancelAnimationFrame(parallaxRaf)
-  cancelAnimationFrame(scrollRaf)
 })
 </script>
 
 <style scoped>
 .landing-page {
-  --scroll-shift: 0px;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   display: grid;
   gap: clamp(2.15rem, 3.15vw, 3.2rem);
@@ -426,7 +411,7 @@ onBeforeUnmount(() => {
   width: min(360px, 28vw);
   height: min(280px, 22vw);
   right: -10%;
-  bottom: calc(16% + var(--scroll-shift) * 0.2);
+  bottom: 16%;
   background: radial-gradient(ellipse at 65% 55%, rgba(87, 96, 196, 0.08), rgba(87, 96, 196, 0) 78%);
   animation-duration: 16s;
 }
@@ -435,7 +420,7 @@ onBeforeUnmount(() => {
   width: min(320px, 28vw);
   height: min(220px, 20vw);
   left: 40%;
-  top: calc(10% + var(--scroll-shift) * -0.08);
+  top: 10%;
   background: radial-gradient(ellipse at 50% 50%, rgba(96, 132, 218, 0.06), rgba(96, 132, 218, 0) 78%);
   animation-duration: 12s;
 }
@@ -444,7 +429,7 @@ onBeforeUnmount(() => {
   width: min(320px, 26vw);
   height: min(240px, 20vw);
   right: 8%;
-  top: calc(70% + var(--scroll-shift) * 0.08);
+  top: 70%;
   background: radial-gradient(ellipse at 42% 54%, rgba(120, 104, 192, 0.06), rgba(120, 104, 192, 0) 82%);
   animation: ambientDrift 14s var(--motion-ease) infinite alternate-reverse;
 }
@@ -453,7 +438,7 @@ onBeforeUnmount(() => {
   width: min(340px, 30vw);
   height: min(260px, 24vw);
   left: 22%;
-  bottom: calc(-6% + var(--scroll-shift) * 0.16);
+  bottom: -6%;
   background: radial-gradient(ellipse at 40% 50%, rgba(55, 106, 218, 0.06), rgba(55, 106, 218, 0) 78%);
   animation-duration: 13s;
 }
@@ -1129,6 +1114,18 @@ onBeforeUnmount(() => {
   0% { box-shadow: 0 0 0 rgba(99, 143, 238, 0); }
   50% { box-shadow: 0 0 18px rgba(99, 143, 238, 0.36); }
   100% { box-shadow: 0 0 0 rgba(99, 143, 238, 0); }
+}
+
+/* Sürekli çalışan dekoratif animasyonları statik tutarak kaydırma performansını korur. */
+.ambient-band,
+.ambient-orb,
+.ambient-streak,
+.hero-media::after,
+.projects-section::after,
+.gallery-section::after,
+.section-heading-wrap::after,
+.hero-shimmer {
+  animation: none;
 }
 
 @media (max-width: 980px) {

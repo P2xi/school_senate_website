@@ -1,5 +1,5 @@
 ﻿<template>
-  <article class="project-card" :class="{ featured }">
+  <article class="project-card">
     <header class="project-head">
       <h3>{{ title }}</h3>
       <span class="status-badge" :class="badgeClass">{{ status }}</span>
@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-type ProjectStatus = 'Yakında' | 'Devam Ediyor' | 'Tamamlandı' | 'Planlanıyor'
+type ProjectStatus = 'Devam Ediyor' | 'Tamamlandı' | 'Planlanıyor'
 
 const props = defineProps<{
   title: string
@@ -24,11 +24,9 @@ const props = defineProps<{
   status: ProjectStatus
   actionLabel: string
   actionTo: string
-  featured?: boolean
 }>()
 
 const badgeClass = computed(() => {
-  if (props.status === 'Yakında') return 'soon'
   if (props.status === 'Devam Ediyor') return 'ongoing'
   if (props.status === 'Planlanıyor') return 'planned'
   return 'completed'
@@ -86,13 +84,6 @@ const badgeClass = computed(() => {
     0 0 30px rgba(74, 116, 214, 0.26);
 }
 
-.project-card.featured {
-  border-color: rgba(200, 217, 247, 0.52);
-  box-shadow:
-    0 16px 30px rgba(2, 8, 20, 0.28),
-    0 0 26px rgba(78, 120, 218, 0.24);
-}
-
 .project-card:hover::before {
   opacity: 0.9;
   transform: translate3d(10px, 8px, 0) scale(1.08);
@@ -115,10 +106,6 @@ const badgeClass = computed(() => {
   font-size: 1.03rem;
   line-height: 1.4;
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.project-card.featured .project-head h3 {
-  font-weight: 680;
 }
 
 .project-summary {
@@ -195,13 +182,6 @@ const badgeClass = computed(() => {
   background: rgba(121, 166, 124, 0.17);
   color: #b9dfbb;
   border-color: rgba(121, 166, 124, 0.28);
-}
-
-.status-badge.soon {
-  background: rgba(180, 163, 122, 0.16);
-  color: #f1e0b9;
-  border-color: rgba(210, 190, 140, 0.45);
-  box-shadow: inset 0 0 8px rgba(214, 192, 140, 0.14);
 }
 
 .status-badge.planned {
