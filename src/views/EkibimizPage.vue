@@ -38,6 +38,7 @@
               v-if="member.photo"
               class="member-photo"
               :src="member.photo"
+              :style="{ objectPosition: member.photoPosition }"
               :alt="`${member.name} profil fotoğrafı`"
               width="96"
               height="96"
@@ -80,6 +81,7 @@
                     v-if="selectedMember.photo"
                     class="quickview-photo"
                     :src="selectedMember.photo"
+                    :style="{ objectPosition: selectedMember.photoPosition }"
                     :alt="`${selectedMember.name} profil fotoğrafı`"
                     width="128"
                     height="128"
@@ -123,6 +125,7 @@ type Member = {
   name: string
   role: string
   photo: string
+  photoPosition?: string
   bio: string
   responsibilities: string[]
 }
@@ -132,6 +135,7 @@ const members: Member[] = [
     name: 'Ozan Biçici',
     role: 'Senato Başkanı',
     photo: getTeamPhotoUrl('Senato Baskani.jpeg'),
+    photoPosition: 'center 15%',
     bio: 'Senato çalışmalarının genel koordinasyonunu yürütür. Ekipler arasındaki iş birliğini ve temsil süreçlerini yönetir.',
     responsibilities: ['Senato gündemi ve karar süreçleri', 'Başkanlıklar arası stratejik koordinasyon'],
   },
