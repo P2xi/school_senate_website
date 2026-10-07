@@ -194,16 +194,23 @@ const members: Member[] = [
   {
     name: 'Nehir Aydoğan',
     role: 'Medya İletişim Başkan Yardımcısı',
-    photo: getTeamPhotoUrl('Medya Iletisim Baskan Yardimcisi.jpeg'),
+    photo: getTeamPhotoUrl('Medya Iletisim Baskan Yardimcisi 2.jpeg'),
     bio: 'İletişim içeriklerinin hazırlanması ve yayınlanması süreçlerine destek olur. Senato çalışmalarının görünürlüğünü güçlendirir.',
     responsibilities: ['İçerik üretim desteği', 'Yayın ve iletişim takibi'],
   },
   {
     name: 'Yağmur Çelik',
     role: 'Medya İletişim Başkan Yardımcısı',
-    photo: getTeamPhotoUrl('Medya Iletisim Baskan Yardimcisi 2.jpeg'),
+    photo: getTeamPhotoUrl('Medya Iletisim Baskan Yardimcisi.jpeg'),
     bio: 'Medya ve iletişim çalışmalarının üretim sürecine katkı sağlar. Mesaj bütünlüğünün ve yayın düzeninin korunmasını destekler.',
     responsibilities: ['Medya içerik koordinasyonu', 'Yayın düzeni ve mesaj kontrolü'],
+  },
+  {
+    name: 'Busenaz Aşar',
+    role: 'Proje Strateji Başkan Yardımcısı',
+    photo: getTeamPhotoUrl('Proje Strateji Baskan Yardimcisi Busenaz Asar.jpeg'),
+    bio: 'Proje stratejilerinin planlama ve uygulama süreçlerine destek verir. Hedeflerin düzenli izlenmesine ve ekipler arası koordinasyona katkı sağlar.',
+    responsibilities: ['Proje planlama ve uygulama desteği', 'Hedef ve ilerleme takibi'],
   },
   {
     name: 'Ebru Hazal Gül',
@@ -583,13 +590,9 @@ onBeforeUnmount(() => {
   animation: none;
 }
 
-/* On dört kişilik kadronun son iki kartını masaüstünde dengeli ortalar. */
-.team-card:nth-child(13) {
-  grid-column: 4 / span 3;
-}
-
-.team-card:nth-child(14) {
-  grid-column: 7 / span 3;
+/* Dört sütunlu düzende son üç kartı kalan yarım sütun kadar kaydırarak ortalar. */
+.team-card:nth-last-child(-n + 3) {
+  left: calc(50% + 0.49rem);
 }
 
 .team-card::before {
@@ -1180,12 +1183,8 @@ onBeforeUnmount(() => {
     grid-column: span 4;
   }
 
-  .team-card:nth-child(13) {
-    grid-column: 3 / span 4;
-  }
-
-  .team-card:nth-child(14) {
-    grid-column: 7 / span 4;
+  .team-card:nth-last-child(-n + 3) {
+    left: auto;
   }
 
   .team-grid .team-card:nth-child(-n + 4) {
@@ -1227,6 +1226,10 @@ onBeforeUnmount(() => {
   .team-card:nth-child(13),
   .team-card:nth-child(14) {
     grid-column: span 6;
+  }
+
+  .team-card:nth-child(15) {
+    grid-column: 4 / span 6;
   }
 
   .team-grid .team-card:nth-child(-n + 3) {
