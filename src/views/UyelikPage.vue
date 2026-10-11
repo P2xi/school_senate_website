@@ -4,13 +4,13 @@
       <span class="eyebrow">Senato üyeliği</span>
       <h1>Topluluğun bir parçası ol.</h1>
       <p>
-        Senato hesabınla duyuruları ve ileride açılacak üyelere özel içerikleri tek bir yerden takip et.
+        Senato hesabınla başkanlıklara güvenli mesaj gönder, yanıtları ve konuşmalarını tek bir yerden takip et.
       </p>
 
       <ul class="benefit-list" aria-label="Üyelik avantajları">
         <li><span>01</span> Güvenli ve kalıcı oturum</li>
         <li><span>02</span> Doğrulanmış e-posta hesabı</li>
-        <li><span>03</span> Üyelere özel içeriklere hazır altyapı</li>
+        <li><span>03</span> Başkanlıklarla özel mesajlaşma</li>
       </ul>
     </div>
 
@@ -36,6 +36,7 @@
         <p v-if="user.email_confirmed_at" class="verified-badge">E-posta doğrulandı</p>
         <p v-if="message" class="form-message" :class="`is-${message.type}`" role="status">{{ message.text }}</p>
 
+        <RouterLink class="primary-button account-action" to="/mesajlar">Mesaj Merkezi'ne git</RouterLink>
         <button class="primary-button danger-button" type="button" :disabled="isSubmitting" @click="handleSignOut">
           {{ isSubmitting ? 'Çıkış yapılıyor…' : 'Çıkış yap' }}
         </button>
@@ -143,12 +144,20 @@ const submitLabel = computed(() => {
 
 const initials = computed(() => displayName.value.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('tr-TR'))
 
+const redirectAfterAuth = async () => {
+  const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/mesajlar'
+  await router.push(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/mesajlar')
+}
+
 const setMode = (nextMode: AuthMode) => {
   mode.value = nextMode
   password.value = ''
   passwordAgain.value = ''
   message.value = null
-  void router.replace({ query: nextMode === 'login' ? {} : { mode: nextMode } })
+  const query: Record<string, string> = {}
+  if (nextMode !== 'login') query.mode = nextMode
+  if (typeof route.query.redirect === 'string') query.redirect = route.query.redirect
+  void router.replace({ query })
 }
 
 const friendlyError = (error: unknown) => {
@@ -176,6 +185,7 @@ const handleSubmit = async () => {
       message.value = data.session
         ? { type: 'success', text: 'Hesabın oluşturuldu ve giriş yapıldı.' }
         : { type: 'success', text: 'Hesabın oluşturuldu. E-postana gelen bağlantıyla hesabını doğrula.' }
+      if (data.session) await redirectAfterAuth()
     } else if (mode.value === 'forgot') {
       await sendPasswordReset(email.value)
       message.value = { type: 'success', text: 'Şifre sıfırlama bağlantısı e-posta adresine gönderildi.' }
@@ -187,6 +197,7 @@ const handleSubmit = async () => {
     } else {
       await signIn(email.value, password.value)
       message.value = { type: 'success', text: 'Giriş başarılı.' }
+      await redirectAfterAuth()
     }
   } catch (error) {
     message.value = { type: 'error', text: friendlyError(error) }
@@ -255,6 +266,8 @@ onMounted(async () => {
 .primary-button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 25px rgba(83, 126, 215, 0.3); }
 .primary-button:disabled { opacity: 0.65; cursor: wait; }
 .danger-button { margin-top: 1.5rem; color: #ffe9ed; border-color: rgba(255, 155, 171, 0.35); background: rgba(172, 55, 75, 0.2); }
+.account-action { width: 100%; display: grid; place-items: center; margin-top: 1.5rem; text-decoration: none; }
+.account-action + .danger-button { margin-top: 0.7rem; }
 .text-button { justify-self: center; border: 0; padding: 0.2rem; color: #a9c4fa; background: transparent; cursor: pointer; }
 .text-button:hover { color: #dce9ff; }
 .form-message { margin: 0; border-radius: 10px; padding: 0.75rem 0.85rem; font-size: 0.84rem; line-height: 1.5; }

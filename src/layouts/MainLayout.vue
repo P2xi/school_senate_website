@@ -31,9 +31,9 @@
             </RouterLink>
           </li>
           <li class="account-menu-item">
-            <RouterLink class="account-link" to="/uyelik" active-class="is-active" @click="closeMobileMenu">
+            <RouterLink class="account-link" :to="user ? '/mesajlar' : '/uyelik'" active-class="is-active" @click="closeMobileMenu">
               <span class="account-dot" :class="{ online: Boolean(user) }" aria-hidden="true" />
-              {{ user ? shortDisplayName : 'Üye Girişi' }}
+              {{ user ? `${shortDisplayName} · Mesajlar` : 'Üye Girişi' }}
             </RouterLink>
           </li>
         </ul>
