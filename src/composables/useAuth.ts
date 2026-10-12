@@ -6,6 +6,7 @@ const session = ref<Session | null>(null)
 const isLoading = ref(true)
 const recoveryRequested = ref(false)
 let initialization: Promise<void> | null = null
+const canonicalSiteUrl = 'https://www.eskisehirmbasenato.org'
 
 const recordSuccessfulLogin = async () => {
   if (!supabase) return
@@ -15,8 +16,9 @@ const recordSuccessfulLogin = async () => {
 
 const getAuthRedirectOrigin = () => {
   const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.trim()
-  const origin = configuredSiteUrl
-    || (import.meta.env.DEV ? 'https://www.eskisehirmbasenato.org' : window.location.origin)
+  const origin = import.meta.env.PROD
+    ? canonicalSiteUrl
+    : configuredSiteUrl || canonicalSiteUrl
 
   return origin.replace(/\/$/, '')
 }

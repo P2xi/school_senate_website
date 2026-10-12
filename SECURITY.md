@@ -36,7 +36,15 @@ where p.id = u.id
 
 Admin paneli: `https://www.eskisehirmbasenato.org/guvenlik`
 
-## 3. Supabase Auth denetim günlükleri
+## 3. Supabase Auth URL ve denetim günlükleri
+
+Parola sıfırlama ve e-posta onayının localhost'a gitmemesi için Supabase Dashboard → **Authentication → URL Configuration** alanında:
+
+- **Site URL:** `https://www.eskisehirmbasenato.org`
+- **Redirect URLs:** `https://www.eskisehirmbasenato.org/uyelik`
+- **Redirect URLs:** `https://www.eskisehirmbasenato.org/uyelik?mode=reset`
+
+değerlerini kaydedin. Custom e-posta şablonu kullanılıyorsa Reset Password bağlantısı `{{ .ConfirmationURL }}` kullanmalıdır; sabit bir localhost adresi veya `{{ .SiteURL }}` ile elle oluşturulmuş bağlantı kullanmayın.
 
 Custom panel yalnızca uygulamanın kaydettiği başarılı oturumları gösterir. Yetkili ve eksiksiz Auth kaydı için:
 
@@ -79,4 +87,3 @@ select public.purge_old_login_events(90);
 ```
 
 Bu sorguyu aylık bir Supabase Cron göreviyle çalıştırın. Güvenlik panelini yalnızca gerçekten ihtiyaç duyan `admin` hesaplarına verin ve kullanıcıları güvenlik günlüğü tutulduğu konusunda gizlilik metninde bilgilendirin.
-
