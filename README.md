@@ -4,8 +4,8 @@
 
 1. Supabase panelinde bir proje oluşturun.
 2. `.env.example` dosyasını `.env.local` adıyla kopyalayın.
-3. `VITE_SUPABASE_URL` ve `VITE_SUPABASE_PUBLISHABLE_KEY` değerlerini Supabase projenizin **Connect** ekranından alın.
-4. Supabase **Authentication > URL Configuration** bölümünde site URL'nizi ve `/uyelik` dönüş adresini izinli yönlendirme adreslerine ekleyin.
+3. `VITE_SUPABASE_URL` ve `VITE_SUPABASE_PUBLISHABLE_KEY` değerlerini Supabase projenizin **Connect** ekranından alın. `VITE_SITE_URL` değerini canlı site adresi olarak ayarlayın.
+4. Supabase **Authentication > URL Configuration** bölümünde **Site URL** değerini `https://www.eskisehirmbasenato.org` yapın ve `https://www.eskisehirmbasenato.org/uyelik` adresini **Redirect URLs** listesine ekleyin.
 5. Supabase **SQL Editor** ekranında [`supabase/migrations/202610120001_create_messaging.sql`](supabase/migrations/202610120001_create_messaging.sql) dosyasının tamamını çalıştırın.
 
 Yerel geliştirme için örnek dönüş adresi: `http://localhost:5173/uyelik`
@@ -37,6 +37,10 @@ Geçerli `inbox_key` değerleri:
 Aynı başkanlığa birden fazla senato hesabı atanabilir. Tüm başkanlık mesajlarını yönetmesi gereken hesap için `role = 'admin'` ve `inbox_key = null` kullanın.
 
 Mesaj tablolarında Row Level Security aktiftir. Normal üyeler yalnızca kendi konuşmalarını; senato hesapları yalnızca atandıkları gelen kutusunu; yöneticiler tüm başkanlık kutularını görebilir.
+
+## Güvenlik ve oturum denetimi
+
+Giriş IP'si, cihaz bilgisi, admin güvenlik paneli, Cloudflare Turnstile ve WAF kurulumu için [`SECURITY.md`](SECURITY.md) kontrol listesini izleyin. İkinci migration dosyası `supabase/migrations/202610120002_security_audit.sql`, giriş kayıt fonksiyonu ise `supabase/functions/record-login/index.ts` konumundadır.
 
 This template should help get you started developing with Vue 3 in Vite.
 

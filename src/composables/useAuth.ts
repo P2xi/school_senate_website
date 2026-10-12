@@ -7,6 +7,20 @@ const isLoading = ref(true)
 const recoveryRequested = ref(false)
 let initialization: Promise<void> | null = null
 
+const recordSuccessfulLogin = async () => {
+  if (!supabase) return
+  const { error } = await supabase.functions.invoke('record-login', { body: {} })
+  if (error) console.warn('Giriş denetim kaydı oluşturulamadı.')
+}
+
+const getAuthRedirectOrigin = () => {
+  const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.trim()
+  const origin = configuredSiteUrl
+    || (import.meta.env.DEV ? 'https://www.eskisehirmbasenato.org' : window.location.origin)
+
+  return origin.replace(/\/$/, '')
+}
+
 const requireClient = () => {
   if (!supabase) {
     throw new Error('Supabase bağlantısı henüz yapılandırılmadı.')
@@ -30,6 +44,10 @@ export const initializeAuth = () => {
 
     if (event === 'PASSWORD_RECOVERY') {
       recoveryRequested.value = true
+    }
+
+    if (event === 'SIGNED_IN' && nextSession) {
+      queueMicrotask(() => void recordSuccessfulLogin())
     }
   })
 
@@ -56,14 +74,15 @@ export const useAuth = () => {
     return typeof fullName === 'string' && fullName.trim() ? fullName.trim() : user.value?.email ?? 'Üye'
   })
 
-  const signUp = async (fullName: string, email: string, password: string) => {
+  const signUp = async (fullName: string, email: string, password: string, captchaToken?: string) => {
     const client = requireClient()
     const { data, error } = await client.auth.signUp({
       email,
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/uyelik`,
+        emailRedirectTo: `${getAuthRedirectOrigin()}/uyelik`,
+        captchaToken,
       },
     })
 
@@ -71,10 +90,15 @@ export const useAuth = () => {
     return data
   }
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, captchaToken?: string) => {
     const client = requireClient()
-    const { data, error } = await client.auth.signInWithPassword({ email, password })
+    const { data, error } = await client.auth.signInWithPassword({
+      email,
+      password,
+      options: { captchaToken },
+    })
     if (error) throw error
+    void recordSuccessfulLogin()
     return data
   }
 
@@ -84,10 +108,11 @@ export const useAuth = () => {
     if (error) throw error
   }
 
-  const sendPasswordReset = async (email: string) => {
+  const sendPasswordReset = async (email: string, captchaToken?: string) => {
     const client = requireClient()
     const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/uyelik?mode=reset`,
+      redirectTo: `${getAuthRedirectOrigin()}/uyelik?mode=reset`,
+      captchaToken,
     })
     if (error) throw error
   }

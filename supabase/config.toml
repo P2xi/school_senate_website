@@ -1,0 +1,3 @@
+[functions.record-login]
+verify_jwt = true
+

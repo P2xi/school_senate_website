@@ -10,6 +10,7 @@
       </div>
       <div class="hero-actions">
         <span v-if="profile" class="role-badge">{{ roleLabel }}</span>
+        <RouterLink v-if="profile?.role === 'admin'" class="security-button" to="/guvenlik">Güvenlik</RouterLink>
         <RouterLink class="new-message-button" to="/iletisim">+ Yeni mesaj</RouterLink>
       </div>
     </section>
@@ -317,6 +318,7 @@ onMounted(loadDashboard)
 .role-badge, .status-pill { display: inline-flex; align-items: center; width: fit-content; border-radius: 999px; padding: 0.36rem 0.65rem; font-size: 0.7rem; font-weight: 700; }
 .role-badge { color: #d7e5ff; border: 1px solid rgba(178, 201, 241, 0.26); background: rgba(122, 155, 218, 0.12); }
 .new-message-button { min-height: 42px; display: inline-flex; align-items: center; border-radius: 11px; padding: 0 0.9rem; color: #0b1830; background: linear-gradient(135deg, #f2f7ff, #b5cdf8); text-decoration: none; font-size: 0.82rem; font-weight: 760; }
+.security-button { min-height: 42px; display: inline-flex; align-items: center; border: 1px solid rgba(181, 203, 242, 0.28); border-radius: 11px; padding: 0 0.8rem; color: #dce9ff; background: rgba(126, 158, 220, 0.1); text-decoration: none; font-size: 0.8rem; }
 .message-workspace { min-height: 650px; display: grid; grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.5fr); gap: 1rem; }
 .message-sidebar, .thread-panel { padding: 0; overflow: hidden; }
 .box-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; margin: 1rem; padding: 0.3rem; border-radius: 11px; background: rgba(3, 11, 24, 0.45); }

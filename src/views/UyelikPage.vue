@@ -82,6 +82,14 @@
           <input v-model="passwordAgain" name="password-confirmation" type="password" autocomplete="new-password" minlength="6" required placeholder="Şifrenizi tekrar yazın" />
         </label>
 
+        <TurnstileWidget
+          v-if="mode !== 'reset'"
+          ref="turnstileRef"
+          @verified="captchaToken = $event"
+          @expired="captchaToken = ''"
+          @error="captchaToken = ''"
+        />
+
         <p v-if="message" class="form-message" :class="`is-${message.type}`" role="status">{{ message.text }}</p>
 
         <button class="primary-button" type="submit" :disabled="isSubmitting">
@@ -99,6 +107,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import TurnstileWidget from '@/components/TurnstileWidget.vue'
 
 type AuthMode = 'login' | 'register' | 'forgot' | 'reset'
 type FormMessage = { type: 'success' | 'error'; text: string }
@@ -127,6 +136,9 @@ const password = ref('')
 const passwordAgain = ref('')
 const isSubmitting = ref(false)
 const message = ref<FormMessage | null>(null)
+const captchaToken = ref('')
+const turnstileRef = ref<{ reset: () => void } | null>(null)
+const turnstileEnabled = Boolean(import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim())
 
 const modeLabel = computed(() => {
   if (mode.value === 'register') return { eyebrow: 'Yeni hesap', title: 'Senatoya katıl', description: 'Bilgilerini girerek üyeliğini birkaç saniyede oluştur.' }
@@ -153,6 +165,7 @@ const setMode = (nextMode: AuthMode) => {
   mode.value = nextMode
   password.value = ''
   passwordAgain.value = ''
+  captchaToken.value = ''
   message.value = null
   const query: Record<string, string> = {}
   if (nextMode !== 'login') query.mode = nextMode
@@ -167,6 +180,7 @@ const friendlyError = (error: unknown) => {
   if (/user already registered/i.test(rawMessage)) return 'Bu e-posta adresiyle daha önce hesap oluşturulmuş.'
   if (/password should be at least/i.test(rawMessage)) return 'Şifre en az 6 karakter olmalı.'
   if (/rate limit/i.test(rawMessage)) return 'Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar dene.'
+  if (/captcha/i.test(rawMessage)) return 'Güvenlik doğrulaması geçersiz veya süresi dolmuş. Lütfen tekrar deneyin.'
   return rawMessage || 'İşlem tamamlanamadı. Lütfen tekrar dene.'
 }
 
@@ -178,16 +192,21 @@ const handleSubmit = async () => {
     return
   }
 
+  if (turnstileEnabled && mode.value !== 'reset' && !captchaToken.value) {
+    message.value = { type: 'error', text: 'Devam etmek için güvenlik doğrulamasını tamamlayın.' }
+    return
+  }
+
   isSubmitting.value = true
   try {
     if (mode.value === 'register') {
-      const data = await signUp(fullName.value, email.value, password.value)
+      const data = await signUp(fullName.value, email.value, password.value, captchaToken.value || undefined)
       message.value = data.session
         ? { type: 'success', text: 'Hesabın oluşturuldu ve giriş yapıldı.' }
         : { type: 'success', text: 'Hesabın oluşturuldu. E-postana gelen bağlantıyla hesabını doğrula.' }
       if (data.session) await redirectAfterAuth()
     } else if (mode.value === 'forgot') {
-      await sendPasswordReset(email.value)
+      await sendPasswordReset(email.value, captchaToken.value || undefined)
       message.value = { type: 'success', text: 'Şifre sıfırlama bağlantısı e-posta adresine gönderildi.' }
     } else if (mode.value === 'reset') {
       if (!user.value && !recoveryRequested.value) throw new Error('Şifre yenileme bağlantısı geçersiz veya süresi dolmuş.')
@@ -195,7 +214,7 @@ const handleSubmit = async () => {
       message.value = { type: 'success', text: 'Şifren güncellendi. Artık yeni şifrenle giriş yapabilirsin.' }
       setTimeout(() => setMode('login'), 1200)
     } else {
-      await signIn(email.value, password.value)
+      await signIn(email.value, password.value, captchaToken.value || undefined)
       message.value = { type: 'success', text: 'Giriş başarılı.' }
       await redirectAfterAuth()
     }
@@ -203,6 +222,8 @@ const handleSubmit = async () => {
     message.value = { type: 'error', text: friendlyError(error) }
   } finally {
     isSubmitting.value = false
+    captchaToken.value = ''
+    turnstileRef.value?.reset()
   }
 }
 

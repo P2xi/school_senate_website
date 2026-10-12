@@ -11,6 +11,7 @@ const IletisimPage = () => import('@/views/IletisimPage.vue')
 const AvrupaBirligiSimulasyonuPage = () => import('@/views/AvrupaBirligiSimulasyonuPage.vue')
 const UyelikPage = () => import('@/views/UyelikPage.vue')
 const MesajlarPage = () => import('@/views/MesajlarPage.vue')
+const GuvenlikPage = () => import('@/views/GuvenlikPage.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +34,7 @@ const router = createRouter({
         { path: 'iletisim', name: 'contact', component: IletisimPage },
         { path: 'uyelik', name: 'membership', component: UyelikPage },
         { path: 'mesajlar', name: 'messages', component: MesajlarPage, meta: { requiresAuth: true } },
+        { path: 'guvenlik', name: 'security', component: GuvenlikPage, meta: { requiresAuth: true } },
       ],
     },
   ],
