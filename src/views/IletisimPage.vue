@@ -78,7 +78,12 @@
             <small>{{ form.body.length }} / 4000</small>
           </label>
 
-          <p v-if="feedback" class="feedback" :class="`is-${feedback.type}`" role="status">{{ feedback.text }}</p>
+          <div v-if="feedback" class="feedback" :class="`is-${feedback.type}`" role="status">
+            <span>{{ feedback.text }}</span>
+            <RouterLink v-if="feedback.type === 'success' && lastMessageId" :to="{ path: '/mesajlar', query: { message: lastMessageId } }">
+              Konuşmayı görüntüle →
+            </RouterLink>
+          </div>
 
           <button type="submit" :disabled="isSubmitting">
             {{ isSubmitting ? 'Gönderiliyor…' : 'Mesajı gönder' }}
@@ -118,17 +123,20 @@ const form = reactive<{ recipientKey: SenateRecipientKey; subject: string; body:
 })
 const feedback = ref<Feedback | null>(null)
 const isSubmitting = ref(false)
+const lastMessageId = ref('')
 
 const handleSubmit = async () => {
   feedback.value = null
+  lastMessageId.value = ''
   isSubmitting.value = true
 
   try {
-    await createMessage({
+    const message = await createMessage({
       recipientKey: form.recipientKey,
       subject: form.subject,
       body: form.body,
     })
+    lastMessageId.value = message.id
     form.subject = ''
     form.body = ''
     feedback.value = {
@@ -184,9 +192,10 @@ onMounted(() => initializeAuth())
 .contact-form small { justify-self: end; color: #70819d; font-weight: 500; }
 .contact-form button, .primary-action { min-height: 48px; display: inline-grid; place-items: center; border: 0; border-radius: 11px; padding: 0.75rem 1rem; color: #081327; background: linear-gradient(135deg, #dbe8ff, #8eaff1); font-weight: 750; cursor: pointer; text-decoration: none; }
 .contact-form button:disabled { opacity: 0.62; cursor: wait; }
-.feedback { margin: 0; border-radius: 10px; padding: 0.75rem 0.85rem; font-size: 0.84rem; line-height: 1.5; }
+.feedback { margin: 0; display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; border-radius: 10px; padding: 0.75rem 0.85rem; font-size: 0.84rem; line-height: 1.5; }
 .feedback.is-success { color: #ccf8df; background: rgba(43, 154, 101, 0.14); border: 1px solid rgba(100, 220, 158, 0.18); }
 .feedback.is-error { color: #ffd7dd; background: rgba(173, 48, 70, 0.16); border: 1px solid rgba(255, 137, 157, 0.2); }
+.feedback a { flex: 0 0 auto; color: inherit; font-weight: 750; }
 .state-panel { text-align: center; display: grid; justify-items: center; gap: 0.85rem; }
 .state-panel > p { margin: 0; color: #aebdd5; line-height: 1.65; max-width: 44ch; }
 .state-icon { display: grid; place-items: center; width: 62px; height: 62px; margin-bottom: 0.5rem; border-radius: 18px; color: #dce9ff; background: rgba(130, 163, 228, 0.15); border: 1px solid rgba(185, 207, 248, 0.22); font-size: 1.4rem; }

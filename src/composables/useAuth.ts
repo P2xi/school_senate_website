@@ -111,9 +111,9 @@ export const useAuth = () => {
   }
 
   const sendPasswordReset = async (email: string, captchaToken?: string) => {
-    const client = requireClient()
-    const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: `${getAuthRedirectOrigin()}/uyelik?mode=reset`,
+  const client = requireClient()
+  const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: `${getAuthRedirectOrigin()}/uyelik`,
       captchaToken,
     })
     if (error) throw error

@@ -6,7 +6,12 @@
 2. `.env.example` dosyasını `.env.local` adıyla kopyalayın.
 3. `VITE_SUPABASE_URL` ve `VITE_SUPABASE_PUBLISHABLE_KEY` değerlerini Supabase projenizin **Connect** ekranından alın. `VITE_SITE_URL` değerini canlı site adresi olarak ayarlayın.
 4. Supabase **Authentication > URL Configuration** bölümünde **Site URL** değerini `https://www.eskisehirmbasenato.org` yapın ve `https://www.eskisehirmbasenato.org/uyelik` adresini **Redirect URLs** listesine ekleyin.
-5. Supabase **SQL Editor** ekranında [`supabase/migrations/202610120001_create_messaging.sql`](supabase/migrations/202610120001_create_messaging.sql) dosyasının tamamını çalıştırın.
+5. Supabase **SQL Editor** ekranında migration dosyalarını tarih sırasıyla çalıştırın:
+   - [`supabase/migrations/202610120001_create_messaging.sql`](supabase/migrations/202610120001_create_messaging.sql)
+   - [`supabase/migrations/202610120002_security_audit.sql`](supabase/migrations/202610120002_security_audit.sql)
+   - [`supabase/migrations/202610140001_reliable_messaging.sql`](supabase/migrations/202610140001_reliable_messaging.sql)
+
+Üçüncü migration; eksik profilleri güvenli biçimde onarır, mesaj/yanıt/durum işlemlerini atomik RPC'lere taşır ve gerçek zamanlı mesaj yenilemeyi etkinleştirir.
 
 Yerel geliştirme için örnek dönüş adresi: `http://localhost:5173/uyelik`
 
@@ -36,7 +41,7 @@ Geçerli `inbox_key` değerleri:
 
 Aynı başkanlığa birden fazla senato hesabı atanabilir. Tüm başkanlık mesajlarını yönetmesi gereken hesap için `role = 'admin'` ve `inbox_key = null` kullanın.
 
-Mesaj tablolarında Row Level Security aktiftir. Normal üyeler yalnızca kendi konuşmalarını; senato hesapları yalnızca atandıkları gelen kutusunu; yöneticiler tüm başkanlık kutularını görebilir.
+Mesaj tablolarında Row Level Security aktiftir. Normal üyeler yalnızca kendi konuşmalarını; senato hesapları yalnızca atandıkları gelen kutusunu; yöneticiler tüm başkanlık kutularını görebilir. İstemci doğrudan tablolara yazamaz; yazma işlemleri kullanıcı ve başkanlık yetkisini sunucu tarafında doğrulayan RPC'lerden geçer.
 
 ## Güvenlik ve oturum denetimi
 

@@ -11,7 +11,10 @@
       <div class="hero-actions">
         <span v-if="profile" class="role-badge">{{ roleLabel }}</span>
         <RouterLink v-if="profile?.role === 'admin'" class="security-button" to="/guvenlik">Güvenlik</RouterLink>
-        <RouterLink class="new-message-button" to="/iletisim">+ Yeni mesaj</RouterLink>
+        <button class="refresh-button" type="button" :disabled="isRefreshing" aria-label="Mesajları yenile" @click="refreshMessages()">
+          {{ isRefreshing ? 'Yenileniyor…' : 'Yenile' }}
+        </button>
+        <button class="new-message-button" type="button" @click="composerOpen = true">+ Yeni mesaj</button>
       </div>
     </section>
 
@@ -52,7 +55,7 @@
             type="button"
             class="message-list-item"
             :class="{ active: selectedMessage?.id === message.id, unread: message.status === 'new' && activeBox === 'inbox' }"
-            @click="openMessage(message)"
+            @click="selectMessage(message)"
           >
             <span class="list-item-top">
               <strong>{{ activeBox === 'inbox' ? message.sender_name : recipientLabel(message.recipient_key) }}</strong>
@@ -149,12 +152,16 @@
         </div>
       </article>
     </section>
+
+    <MessageComposer :open="composerOpen" @close="composerOpen = false" @sent="handleMessageSent" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import type { RealtimeChannel } from '@supabase/supabase-js'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import MessageComposer from '@/components/MessageComposer.vue'
 import { useAuth } from '@/composables/useAuth'
 import { getRecipient } from '@/data/senateRecipients'
 import {
@@ -164,6 +171,8 @@ import {
   getMyProfile,
   isMessagingSchemaError,
   setMessageStatus,
+  subscribeToMessaging,
+  unsubscribeFromMessaging,
   type MemberProfile,
   type MessageReply,
   type MessageStatus,
@@ -174,6 +183,8 @@ type MessageBox = 'inbox' | 'sent'
 type ThreadFeedback = { type: 'success' | 'error'; text: string }
 
 const { user, initializeAuth } = useAuth()
+const route = useRoute()
+const router = useRouter()
 const profile = ref<MemberProfile | null>(null)
 const messages = ref<SenateMessage[]>([])
 const replies = ref<MessageReply[]>([])
@@ -181,11 +192,16 @@ const selectedMessage = ref<SenateMessage | null>(null)
 const activeBox = ref<MessageBox>('sent')
 const replyBody = ref('')
 const isLoading = ref(true)
+const isRefreshing = ref(false)
 const isLoadingReplies = ref(false)
 const isSendingReply = ref(false)
 const isUpdatingStatus = ref(false)
 const errorMessage = ref('')
 const threadFeedback = ref<ThreadFeedback | null>(null)
+const composerOpen = ref(false)
+let realtimeChannel: RealtimeChannel | null = null
+let realtimeTimer = 0
+let openRequestId = 0
 
 const canManageInbox = computed(() => profile.value?.role === 'senator' || profile.value?.role === 'admin')
 const sentMessages = computed(() => messages.value.filter((message) => message.sender_id === user.value?.id))
@@ -222,31 +238,46 @@ const initials = (name: string) => name.split(/\s+/).slice(0, 2).map((part) => p
 
 const describeError = (error: unknown) => {
   if (isMessagingSchemaError(error)) {
-    return 'Mesajlaşma veritabanı henüz kurulmamış. Supabase migration dosyasını çalıştırın.'
+    return 'Mesaj servisi güncellemesi henüz kurulmamış. Yönetici yeni Supabase migration dosyasını çalıştırmalıdır.'
   }
+  const candidate = error as { code?: string; message?: string } | null
+  if (candidate?.code === '42501') return 'Bu işlem için yetkiniz bulunmuyor.'
+  if (/jwt|session|not authenticated|oturum/i.test(candidate?.message ?? '')) return 'Oturumunuz sona ermiş. Lütfen yeniden giriş yapın.'
   return 'Sunucuyla bağlantı kurulamadı. Lütfen biraz sonra tekrar deneyin.'
 }
 
 const openMessage = async (message: SenateMessage) => {
+  const requestId = ++openRequestId
   selectedMessage.value = message
   replies.value = []
   replyBody.value = ''
   threadFeedback.value = null
   isLoadingReplies.value = true
   try {
-    replies.value = await getMessageReplies(message.id)
+    const messageReplies = await getMessageReplies(message.id)
+    if (requestId === openRequestId) replies.value = messageReplies
   } catch (error) {
-    threadFeedback.value = { type: 'error', text: describeError(error) }
+    if (requestId === openRequestId) threadFeedback.value = { type: 'error', text: describeError(error) }
   } finally {
-    isLoadingReplies.value = false
+    if (requestId === openRequestId) isLoadingReplies.value = false
   }
+}
+
+const selectMessage = async (message: SenateMessage) => {
+  await router.replace({ query: { ...route.query, message: message.id } })
+  await openMessage(message)
 }
 
 const setActiveBox = (box: MessageBox) => {
   activeBox.value = box
   const firstMessage = box === 'inbox' ? inboxMessages.value[0] : sentMessages.value[0]
-  if (firstMessage) void openMessage(firstMessage)
-  else selectedMessage.value = null
+  if (firstMessage) void selectMessage(firstMessage)
+  else {
+    selectedMessage.value = null
+    const query = { ...route.query }
+    delete query.message
+    void router.replace({ query })
+  }
 }
 
 const loadDashboard = async () => {
@@ -257,14 +288,51 @@ const loadDashboard = async () => {
     const [profileData, messageData] = await Promise.all([getMyProfile(), getAccessibleMessages()])
     profile.value = profileData
     messages.value = messageData
-    activeBox.value = profileData.role === 'member' ? 'sent' : 'inbox'
-    const firstMessage = activeBox.value === 'inbox' ? inboxMessages.value[0] : sentMessages.value[0]
+    const requestedId = typeof route.query.message === 'string' ? route.query.message : ''
+    const requestedMessage = messageData.find((message) => message.id === requestedId)
+    activeBox.value = requestedMessage
+      ? requestedMessage.sender_id === user.value?.id ? 'sent' : 'inbox'
+      : profileData.role === 'member' ? 'sent' : 'inbox'
+    const firstMessage = requestedMessage
+      ?? (activeBox.value === 'inbox' ? inboxMessages.value[0] : sentMessages.value[0])
     if (firstMessage) await openMessage(firstMessage)
   } catch (error) {
     errorMessage.value = describeError(error)
   } finally {
     isLoading.value = false
   }
+}
+
+const refreshMessages = async (preferredMessageId?: string) => {
+  if (isRefreshing.value) return
+  isRefreshing.value = true
+  try {
+    const previousId = preferredMessageId ?? selectedMessage.value?.id
+    messages.value = await getAccessibleMessages()
+    const nextMessage = messages.value.find((message) => message.id === previousId)
+      ?? visibleMessages.value[0]
+      ?? null
+    if (nextMessage) await openMessage(nextMessage)
+    else selectedMessage.value = null
+  } catch (error) {
+    if (selectedMessage.value) threadFeedback.value = { type: 'error', text: describeError(error) }
+    else errorMessage.value = describeError(error)
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+const handleMessageSent = async (messageId: string) => {
+  composerOpen.value = false
+  activeBox.value = 'sent'
+  await router.replace({ query: { ...route.query, message: messageId } })
+  await refreshMessages(messageId)
+  threadFeedback.value = { type: 'success', text: 'Mesajınız gönderildi.' }
+}
+
+const scheduleRealtimeRefresh = () => {
+  window.clearTimeout(realtimeTimer)
+  realtimeTimer = window.setTimeout(() => void refreshMessages(), 350)
 }
 
 const handleReply = async () => {
@@ -274,10 +342,7 @@ const handleReply = async () => {
   try {
     const currentMessage = selectedMessage.value
     await createReply(currentMessage.id, replyBody.value)
-    if (canManageSelected.value && currentMessage.status !== 'answered') {
-      await setMessageStatus(currentMessage.id, 'answered')
-      currentMessage.status = 'answered'
-    }
+    if (canManageSelected.value) currentMessage.status = 'answered'
     replyBody.value = ''
     replies.value = await getMessageReplies(currentMessage.id)
     threadFeedback.value = { type: 'success', text: 'Yanıt gönderildi.' }
@@ -305,7 +370,15 @@ const handleStatusChange = async (event: Event) => {
   }
 }
 
-onMounted(loadDashboard)
+onMounted(async () => {
+  await loadDashboard()
+  if (!errorMessage.value) realtimeChannel = subscribeToMessaging(scheduleRealtimeRefresh)
+})
+
+onBeforeUnmount(() => {
+  window.clearTimeout(realtimeTimer)
+  void unsubscribeFromMessaging(realtimeChannel)
+})
 </script>
 
 <style scoped>
@@ -317,7 +390,9 @@ onMounted(loadDashboard)
 .hero-actions { display: flex; align-items: center; gap: 0.65rem; }
 .role-badge, .status-pill { display: inline-flex; align-items: center; width: fit-content; border-radius: 999px; padding: 0.36rem 0.65rem; font-size: 0.7rem; font-weight: 700; }
 .role-badge { color: #d7e5ff; border: 1px solid rgba(178, 201, 241, 0.26); background: rgba(122, 155, 218, 0.12); }
-.new-message-button { min-height: 42px; display: inline-flex; align-items: center; border-radius: 11px; padding: 0 0.9rem; color: #0b1830; background: linear-gradient(135deg, #f2f7ff, #b5cdf8); text-decoration: none; font-size: 0.82rem; font-weight: 760; }
+.new-message-button { min-height: 42px; display: inline-flex; align-items: center; border: 0; border-radius: 11px; padding: 0 0.9rem; color: #0b1830; background: linear-gradient(135deg, #f2f7ff, #b5cdf8); font-size: 0.82rem; font-weight: 760; cursor: pointer; }
+.refresh-button { min-height: 42px; border: 1px solid rgba(181, 203, 242, 0.24); border-radius: 11px; padding: 0 0.75rem; color: #b9c9e2; background: rgba(126, 158, 220, 0.07); cursor: pointer; }
+.refresh-button:disabled { opacity: 0.55; cursor: wait; }
 .security-button { min-height: 42px; display: inline-flex; align-items: center; border: 1px solid rgba(181, 203, 242, 0.28); border-radius: 11px; padding: 0 0.8rem; color: #dce9ff; background: rgba(126, 158, 220, 0.1); text-decoration: none; font-size: 0.8rem; }
 .message-workspace { min-height: 650px; display: grid; grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.5fr); gap: 1rem; }
 .message-sidebar, .thread-panel { padding: 0; overflow: hidden; }

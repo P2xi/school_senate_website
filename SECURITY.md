@@ -46,6 +46,16 @@ Parola sıfırlama ve e-posta onayının localhost'a gitmemesi için Supabase Da
 
 değerlerini kaydedin. Custom e-posta şablonu kullanılıyorsa Reset Password bağlantısı `{{ .ConfirmationURL }}` kullanmalıdır; sabit bir localhost adresi veya `{{ .SiteURL }}` ile elle oluşturulmuş bağlantı kullanmayın.
 
+CLI ile aynı ayarları göndermek için `supabase/config.toml` hazırdır:
+
+```powershell
+npx supabase login
+npx supabase link --project-ref aksbktcrzftimmjxluuj
+npx supabase config push
+```
+
+Değişiklikten önce oluşturulmuş e-postalar eski localhost adresini taşımaya devam eder. Ayarı kaydettikten sonra yeni bir doğrulama veya parola sıfırlama e-postası gönderin.
+
 Custom panel yalnızca uygulamanın kaydettiği başarılı oturumları gösterir. Yetkili ve eksiksiz Auth kaydı için:
 
 1. Supabase Dashboard → **Authentication → Audit Logs** bölümüne gidin.

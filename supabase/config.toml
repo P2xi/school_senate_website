@@ -1,3 +1,11 @@
+project_id = "school_senate_website"
+
+[auth]
+site_url = "https://www.eskisehirmbasenato.org"
+additional_redirect_urls = [
+  "https://www.eskisehirmbasenato.org/uyelik",
+  "https://www.eskisehirmbasenato.org/uyelik?mode=reset"
+]
+
 [functions.record-login]
 verify_jwt = true
-
