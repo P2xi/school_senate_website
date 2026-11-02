@@ -11,6 +11,12 @@ export type ProjectContent = {
   detailTo: string
 }
 
+export type UpcomingProjectContent = {
+  title: string
+  date: string
+  status: 'Planlandı'
+}
+
 export const projectsContent: ProjectContent[] = [
   {
     title: 'Avrupa Birliği Simülasyonu Programı',
@@ -39,6 +45,49 @@ export const projectsContent: ProjectContent[] = [
     homeDescription: 'Karar süreçlerini görünür kılan ve öğrenci erişimine açık şeffaf takip sistemi.',
     projectsDescription: 'Karar süreçlerini görünür kılan ve öğrenci erişimine açık şeffaf takip sistemi.',
     detailTo: '/projeler?karar-paneli',
+  },
+]
+
+export const upcomingProjectsContent: UpcomingProjectContent[] = [
+  {
+    title: 'LÖSEV Farkındalık Panosu',
+    date: '2–8 Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'Türk Dilleri ve Tarihi Topluluğu Üye Alımı',
+    date: 'Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'Engelsiz Yaşam Çalıştayı Başvuruları',
+    date: 'Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'Atatürk’ü Anma ve Farkındalık Faaliyetleri',
+    date: '10–16 Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'NASA Space Apps Challenge',
+    date: '14–15 Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'E-Spor Turnuvası',
+    date: '16–22 Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'Öğretmenler Günü Faaliyetleri',
+    date: '24 Kasım 2026',
+    status: 'Planlandı',
+  },
+  {
+    title: 'Kasım Ayı Öğrenci Geri Bildirimleri ve Aralık Talepleri',
+    date: '27 Kasım 2026',
+    status: 'Planlandı',
   },
 ]
 

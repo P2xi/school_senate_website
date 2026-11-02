@@ -26,6 +26,23 @@ export type SecuritySummary = {
   last_event_at: string | null
 }
 
+export type AdminUserActivity = {
+  user_id: string
+  email: string
+  full_name: string
+  role: 'member' | 'senator' | 'admin'
+  inbox_key: string | null
+  created_at: string
+  email_confirmed_at: string | null
+  last_sign_in_at: string | null
+  last_login_ip: string | null
+  last_login_country: string | null
+  last_device_type: string | null
+  last_browser_name: string | null
+  last_operating_system: string | null
+  last_login_recorded_at: string | null
+}
+
 const requireClient = () => {
   if (!supabase) throw new Error('Supabase bağlantısı yapılandırılmadı.')
   return supabase
@@ -51,3 +68,9 @@ export const getSecuritySummary = async (days = 30) => {
   return data as SecuritySummary
 }
 
+export const getAdminUserActivity = async () => {
+  const { data, error } = await requireClient().rpc('get_admin_user_activity')
+
+  if (error) throw error
+  return (data ?? []) as AdminUserActivity[]
+}

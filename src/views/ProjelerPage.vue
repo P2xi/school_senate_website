@@ -27,22 +27,25 @@
       </div>
     </section>
 
-    <section class="projects-grid" aria-label="Proje kartlar&#305;" data-scene>
-      <article
-        v-for="(project, index) in projectsContent"
-        :key="project.title"
-        class="project-card reveal-item"
-        data-reveal
-        :style="{ '--reveal-delay': `${index * 85 + 90}ms` }"
-      >
-        <header class="card-head">
-          <span class="category-label">{{ project.category }}</span>
-          <span class="status-badge" :class="getStatusClass(project.status)">{{ project.status }}</span>
-        </header>
-        <h2>{{ project.title }}</h2>
-        <p>{{ project.projectsDescription }}</p>
-        <RouterLink class="detail-button" :to="project.detailTo">Detaylar&#305; G&#246;r</RouterLink>
-      </article>
+    <section class="upcoming-projects" aria-labelledby="upcoming-projects-title" data-scene>
+      <header class="section-heading reveal-item" data-reveal>
+        <p class="section-kicker">Etkinlik Takvimi</p>
+        <h2 id="upcoming-projects-title">Yapılacak Projeler</h2>
+      </header>
+
+      <div class="projects-grid upcoming-grid">
+        <article
+          v-for="(project, index) in upcomingProjectsContent"
+          :key="project.title"
+          class="project-card upcoming-card reveal-item"
+          data-reveal
+          :style="{ '--reveal-delay': `${index * 65 + 70}ms` }"
+        >
+          <span class="status-badge planned">{{ project.status }}</span>
+          <h2>{{ project.title }}</h2>
+          <time>{{ project.date }}</time>
+        </article>
+      </div>
     </section>
 
     <section class="cta-section page-section reveal-item" data-reveal data-scene>
@@ -57,10 +60,8 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import {
-  getProjectStatusCount,
   getProjectsPortfolioMetric,
-  projectsContent,
-  type ProjectStatus,
+  upcomingProjectsContent,
 } from '@/data/projects'
 
 const projectsPortfolioMetric = getProjectsPortfolioMetric()
@@ -69,15 +70,9 @@ let revealObserver: IntersectionObserver | null = null
 
 const headerStats = computed(() => [
   { value: projectsPortfolioMetric.display, label: 'Toplam Proje' },
-  { value: String(projectsContent.length), label: 'Listelenen Proje' },
-  { value: String(getProjectStatusCount('Planlan\u0131yor')), label: 'Planlanan' },
+  { value: String(upcomingProjectsContent.length), label: 'Listelenen Proje' },
+  { value: String(upcomingProjectsContent.length), label: 'Planlanan' },
 ])
-
-const getStatusClass = (status: ProjectStatus): string => {
-  if (status === 'Planlan\u0131yor') return 'planned'
-  if (status === 'Devam Ediyor') return 'ongoing'
-  return 'completed'
-}
 
 onMounted(async () => {
   const root = pageRef.value
@@ -334,6 +329,56 @@ onBeforeUnmount(() => {
   gap: 0.98rem;
   position: relative;
   padding-top: 0.2rem;
+}
+
+.upcoming-projects {
+  display: grid;
+  gap: 1rem;
+}
+
+.section-heading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.section-heading h2,
+.section-kicker {
+  margin: 0;
+}
+
+.section-heading h2 {
+  color: #f4f8ff;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  letter-spacing: -0.02em;
+}
+
+.section-kicker {
+  color: rgba(172, 197, 242, 0.86);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.upcoming-grid {
+  align-items: stretch;
+}
+
+.upcoming-card {
+  align-content: start;
+  min-height: 168px;
+}
+
+.upcoming-card .status-badge {
+  width: fit-content;
+}
+
+.upcoming-card time {
+  margin-top: auto;
+  color: rgba(203, 218, 242, 0.92);
+  font-size: 0.9rem;
+  font-weight: 580;
+  line-height: 1.45;
 }
 
 .projects-grid::before {

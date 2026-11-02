@@ -10,8 +10,11 @@
    - [`supabase/migrations/202610120001_create_messaging.sql`](supabase/migrations/202610120001_create_messaging.sql)
    - [`supabase/migrations/202610120002_security_audit.sql`](supabase/migrations/202610120002_security_audit.sql)
    - [`supabase/migrations/202610140001_reliable_messaging.sql`](supabase/migrations/202610140001_reliable_messaging.sql)
+   - [`supabase/migrations/202610140002_admin_user_activity.sql`](supabase/migrations/202610140002_admin_user_activity.sql)
 
 Üçüncü migration; eksik profilleri güvenli biçimde onarır, mesaj/yanıt/durum işlemlerini atomik RPC'lere taşır ve gerçek zamanlı mesaj yenilemeyi etkinleştirir.
+
+Dördüncü migration, yönetici panelindeki Kullanıcılar sekmesine Supabase Auth kaynaklı son giriş zamanını getirir. Son IP ve cihaz alanlarının dolması için `record-login` Edge Function'ının ayrıca deploy edilmesi gerekir.
 
 Yerel geliştirme için örnek dönüş adresi: `http://localhost:5173/uyelik`
 
