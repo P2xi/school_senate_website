@@ -43,6 +43,9 @@ const requireClient = () => {
 const isMissingRpcError = (error: unknown) =>
   (error as { code?: string } | null)?.code === 'PGRST202'
 
+const messageColumns = 'id, sender_id, sender_name, sender_email, recipient_key, subject, body, status, created_at, updated_at'
+const replyColumns = 'id, message_id, author_id, author_name, author_role, body, created_at'
+
 export const getMyProfile = async () => {
   const client = requireClient()
   const { data: authData, error: authError } = await client.auth.getUser()
@@ -100,24 +103,35 @@ export const createMessage = async (payload: {
   return { id: data as string }
 }
 
-export const getAccessibleMessages = async () => {
+export const getAccessibleMessages = async (limit = 75, before?: string) => {
   const client = requireClient()
-  const { data, error } = await client
+  const pageSize = Math.min(Math.max(limit, 1), 200)
+  let query = client
     .from('messages')
-    .select('*')
+    .select(messageColumns)
     .order('created_at', { ascending: false })
+    .limit(pageSize + 1)
+
+  if (before) query = query.lt('created_at', before)
+
+  const { data, error } = await query
 
   if (error) throw error
-  return (data ?? []) as SenateMessage[]
+  const rows = (data ?? []) as SenateMessage[]
+  return {
+    messages: rows.slice(0, pageSize),
+    hasMore: rows.length > pageSize,
+  }
 }
 
-export const getMessageReplies = async (messageId: string) => {
+export const getMessageReplies = async (messageId: string, limit = 200) => {
   const client = requireClient()
   const { data, error } = await client
     .from('message_replies')
-    .select('*')
+    .select(replyColumns)
     .eq('message_id', messageId)
     .order('created_at', { ascending: true })
+    .limit(Math.min(Math.max(limit, 1), 500))
 
   if (error) throw error
   return (data ?? []) as MessageReply[]

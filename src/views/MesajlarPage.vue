@@ -72,6 +72,16 @@
           <p>{{ activeBox === 'inbox' ? 'Bu başkanlığa henüz mesaj gelmedi.' : 'Henüz bir mesaj göndermediniz.' }}</p>
           <RouterLink v-if="activeBox === 'sent'" to="/iletisim">İlk mesajı gönder</RouterLink>
         </div>
+
+        <button
+          v-if="hasMoreMessages"
+          class="load-more-button"
+          type="button"
+          :disabled="isLoadingMore"
+          @click="loadMoreMessages"
+        >
+          {{ isLoadingMore ? 'Yükleniyor…' : 'Daha eski mesajları yükle' }}
+        </button>
       </aside>
 
       <article class="thread-panel page-section">
@@ -196,12 +206,15 @@ const isRefreshing = ref(false)
 const isLoadingReplies = ref(false)
 const isSendingReply = ref(false)
 const isUpdatingStatus = ref(false)
+const isLoadingMore = ref(false)
+const hasMoreMessages = ref(false)
 const errorMessage = ref('')
 const threadFeedback = ref<ThreadFeedback | null>(null)
 const composerOpen = ref(false)
 let realtimeChannel: RealtimeChannel | null = null
 let realtimeTimer = 0
 let openRequestId = 0
+let hasPendingBackgroundRefresh = false
 
 const canManageInbox = computed(() => profile.value?.role === 'senator' || profile.value?.role === 'admin')
 const sentMessages = computed(() => messages.value.filter((message) => message.sender_id === user.value?.id))
@@ -242,6 +255,9 @@ const describeError = (error: unknown) => {
   }
   const candidate = error as { code?: string; message?: string } | null
   if (candidate?.code === '42501') return 'Bu işlem için yetkiniz bulunmuyor.'
+  if (candidate?.code === 'message_rate_limit' || candidate?.code === 'reply_rate_limit') {
+    return candidate.message ?? 'Çok fazla istek gönderdiniz. Lütfen biraz bekleyip tekrar deneyin.'
+  }
   if (/jwt|session|not authenticated|oturum/i.test(candidate?.message ?? '')) return 'Oturumunuz sona ermiş. Lütfen yeniden giriş yapın.'
   return 'Sunucuyla bağlantı kurulamadı. Lütfen biraz sonra tekrar deneyin.'
 }
@@ -285,11 +301,12 @@ const loadDashboard = async () => {
   errorMessage.value = ''
   try {
     await initializeAuth()
-    const [profileData, messageData] = await Promise.all([getMyProfile(), getAccessibleMessages()])
+    const [profileData, messagePage] = await Promise.all([getMyProfile(), getAccessibleMessages()])
     profile.value = profileData
-    messages.value = messageData
+    messages.value = messagePage.messages
+    hasMoreMessages.value = messagePage.hasMore
     const requestedId = typeof route.query.message === 'string' ? route.query.message : ''
-    const requestedMessage = messageData.find((message) => message.id === requestedId)
+    const requestedMessage = messagePage.messages.find((message) => message.id === requestedId)
     activeBox.value = requestedMessage
       ? requestedMessage.sender_id === user.value?.id ? 'sent' : 'inbox'
       : profileData.role === 'member' ? 'sent' : 'inbox'
@@ -308,7 +325,13 @@ const refreshMessages = async (preferredMessageId?: string) => {
   isRefreshing.value = true
   try {
     const previousId = preferredMessageId ?? selectedMessage.value?.id
-    messages.value = await getAccessibleMessages()
+    const messagePage = await getAccessibleMessages()
+    const mergedMessages = new Map(messages.value.map((message) => [message.id, message]))
+    messagePage.messages.forEach((message) => mergedMessages.set(message.id, message))
+    messages.value = [...mergedMessages.values()].sort(
+      (left, right) => new Date(right.created_at).getTime() - new Date(left.created_at).getTime(),
+    )
+    hasMoreMessages.value = hasMoreMessages.value || messagePage.hasMore
     const nextMessage = messages.value.find((message) => message.id === previousId)
       ?? visibleMessages.value[0]
       ?? null
@@ -322,6 +345,22 @@ const refreshMessages = async (preferredMessageId?: string) => {
   }
 }
 
+const loadMoreMessages = async () => {
+  const oldestMessage = messages.value[messages.value.length - 1]
+  if (!oldestMessage || isLoadingMore.value || !hasMoreMessages.value) return
+  isLoadingMore.value = true
+  try {
+    const messagePage = await getAccessibleMessages(75, oldestMessage.created_at)
+    const knownIds = new Set(messages.value.map((message) => message.id))
+    messages.value.push(...messagePage.messages.filter((message) => !knownIds.has(message.id)))
+    hasMoreMessages.value = messagePage.hasMore
+  } catch (error) {
+    threadFeedback.value = { type: 'error', text: describeError(error) }
+  } finally {
+    isLoadingMore.value = false
+  }
+}
+
 const handleMessageSent = async (messageId: string) => {
   composerOpen.value = false
   activeBox.value = 'sent'
@@ -331,8 +370,18 @@ const handleMessageSent = async (messageId: string) => {
 }
 
 const scheduleRealtimeRefresh = () => {
+  if (document.visibilityState !== 'visible') {
+    hasPendingBackgroundRefresh = true
+    return
+  }
   window.clearTimeout(realtimeTimer)
   realtimeTimer = window.setTimeout(() => void refreshMessages(), 350)
+}
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState !== 'visible' || !hasPendingBackgroundRefresh) return
+  hasPendingBackgroundRefresh = false
+  scheduleRealtimeRefresh()
 }
 
 const handleReply = async () => {
@@ -373,10 +422,12 @@ const handleStatusChange = async (event: Event) => {
 onMounted(async () => {
   await loadDashboard()
   if (!errorMessage.value) realtimeChannel = subscribeToMessaging(scheduleRealtimeRefresh)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onBeforeUnmount(() => {
   window.clearTimeout(realtimeTimer)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
   void unsubscribeFromMessaging(realtimeChannel)
 })
 </script>
@@ -420,6 +471,8 @@ onBeforeUnmount(() => {
 .status-answered { color: #c9f6db; background: rgba(50, 164, 103, 0.15); }
 .status-closed { color: #a9b5c9; background: rgba(124, 137, 159, 0.14); }
 .message-list-item .status-pill { margin-top: 0.2rem; }
+.load-more-button { width: calc(100% - 1.1rem); min-height: 40px; margin: 0.5rem 0.55rem; border: 1px solid rgba(164, 192, 243, 0.2); border-radius: 10px; color: #aebfda; background: rgba(121, 153, 216, 0.07); cursor: pointer; }
+.load-more-button:disabled { opacity: 0.55; cursor: wait; }
 .empty-list, .empty-thread, .loading-state { min-height: 310px; display: grid; place-content: center; justify-items: center; gap: 0.65rem; text-align: center; color: #8fa0ba; }
 .empty-list span, .empty-thread > span { font-size: 1.6rem; color: #9bb9ef; }
 .empty-list p, .empty-thread p { margin: 0; max-width: 34ch; line-height: 1.6; }

@@ -97,3 +97,15 @@ select public.purge_old_login_events(90);
 ```
 
 Bu sorguyu aylık bir Supabase Cron göreviyle çalıştırın. Güvenlik panelini yalnızca gerçekten ihtiyaç duyan `admin` hesaplarına verin ve kullanıcıları güvenlik günlüğü tutulduğu konusunda gizlilik metninde bilgilendirin.
+
+## 7. Yük ve istek kapasitesi
+
+Supabase Data API istekleri plan kotası açısından sınırsızdır; pratik kapasiteyi proje compute gücü, sorgu maliyeti, egress, Realtime mesajları ve Edge Function çağrıları belirler. Bu projede:
+
+- Son 75 erişilebilir mesaj ve konuşma başına son 200 yanıt yüklenir.
+- Arka plandaki sekmeler Realtime olaylarında tekrar tekrar veri çekmez; görünür olunca tek sefer yenilenir.
+- `record-login` aynı Auth oturumu için tarayıcı başına yalnızca bir kez çağrılır.
+- Yeni mesajlar hesap başına 10 dakikada 10, yanıtlar 10 dakikada 30 adetle sınırlandırılır.
+- RLS filtreleri ve admin kontrolleri mümkün olduğunda sorgu başına bir kez değerlendirilir.
+
+Canlı kullanımda Supabase Dashboard → **Reports** ekranından Database connections, CPU, memory, egress, Edge Function invocations ve Realtime message count grafiklerini izleyin. HTTP 5xx veya timeout devam ederse önce en pahalı sorguları Performance Advisor ve `pg_stat_statements` ile inceleyin; ancak bundan sonra compute yükseltmesini değerlendirin. Tarayıcı uygulaması Data API kullandığı için frontend'e doğrudan Postgres bağlantısı veya ayrı bir PgBouncer bağlantısı eklemeyin.

@@ -6,12 +6,49 @@ const session = ref<Session | null>(null)
 const isLoading = ref(true)
 const recoveryRequested = ref(false)
 let initialization: Promise<void> | null = null
+let auditSessionInFlight: string | null = null
 const canonicalSiteUrl = 'https://www.eskisehirmbasenato.org'
+const loginAuditStorageKey = 'senato:last-audited-session'
 
-const recordSuccessfulLogin = async () => {
+const getSessionId = (currentSession: Session) => {
+  try {
+    const encodedPayload = currentSession.access_token.split('.')[1]
+    if (!encodedPayload) return null
+    const normalized = encodedPayload.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=')
+    const payload = JSON.parse(atob(padded)) as { session_id?: unknown }
+    return typeof payload.session_id === 'string' ? payload.session_id : null
+  } catch {
+    return null
+  }
+}
+
+const recordSuccessfulLogin = async (currentSession: Session) => {
   if (!supabase) return
-  const { error } = await supabase.functions.invoke('record-login', { body: {} })
-  if (error) console.warn('Giriş denetim kaydı oluşturulamadı.')
+  const sessionId = getSessionId(currentSession)
+  if (!sessionId || auditSessionInFlight === sessionId) return
+
+  try {
+    if (window.localStorage.getItem(loginAuditStorageKey) === sessionId) return
+  } catch {
+    // Storage can be unavailable in strict privacy modes; the in-memory guard still applies.
+  }
+
+  auditSessionInFlight = sessionId
+  try {
+    const { error } = await supabase.functions.invoke('record-login', { body: {} })
+    if (error) {
+      console.warn('Giriş denetim kaydı oluşturulamadı.')
+      return
+    }
+    try {
+      window.localStorage.setItem(loginAuditStorageKey, sessionId)
+    } catch {
+      // The audit succeeded; failing to persist the optimization is non-fatal.
+    }
+  } finally {
+    if (auditSessionInFlight === sessionId) auditSessionInFlight = null
+  }
 }
 
 const getAuthRedirectOrigin = () => {
@@ -49,7 +86,7 @@ export const initializeAuth = () => {
     }
 
     if (event === 'SIGNED_IN' && nextSession) {
-      queueMicrotask(() => void recordSuccessfulLogin())
+      queueMicrotask(() => void recordSuccessfulLogin(nextSession))
     }
   })
 
@@ -100,7 +137,6 @@ export const useAuth = () => {
       options: { captchaToken },
     })
     if (error) throw error
-    void recordSuccessfulLogin()
     return data
   }
 
